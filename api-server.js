@@ -80,47 +80,64 @@ app.post('/analyze', async (req, res) => {
         const ownerReposResponse = await githubClient.get(`/users/${owner}/repos?sort=stars&per_page=20`);
         const ownerRepos = ownerReposResponse.data;
         
-        // Step 5: AI Analysis
-        console.log(`🤖 [API] Running AI analysis...`);
+        // Step 5: Enhanced AI Analysis with Company Discovery
+        console.log(`🤖 [API] Running enhanced AI analysis with company discovery...`);
         
-        // Create company description
-        const techStack = [...new Set(ownerRepos.map(r => r.language).filter(Boolean))];
-        const allTopics = [...new Set(ownerRepos.flatMap(r => r.topics || []))];
-        const totalStars = ownerRepos.reduce((sum, r) => sum + r.stargazers_count, 0);
-        
-        const companyDescription = `${owner} is a technology company with ${ownerRepos.length} repositories. ` +
-            `Primary languages: ${techStack.slice(0, 3).join(', ')}. ` +
-            `Focus areas: ${allTopics.slice(0, 5).join(', ')}. ` +
-            `Total ${totalStars} stars across projects.`;
-        
-        // AI Classification
-        const companyType = await fastAI.classifyCompany(companyDescription);
-        
-        // Step 6: Find Similar Companies
-        console.log(`🔍 [API] Finding similar companies...`);
-        
-        const targetCompany = {
-            name: owner,
-            description: companyDescription,
-            tech_stack: techStack
+        const repoAnalysisData = {
+            name: repoData.name,
+            full_name: repoData.full_name,
+            description: repoData.description,
+            language: repoData.language,
+            topics: repoData.topics || [],
+            stars: repoData.stargazers_count,
+            owner: owner
         };
         
-        const knownCompanies = [
-            { name: 'vercel', description: 'Next.js creators, TypeScript and React focus, frontend deployment platform', tech_stack: ['TypeScript', 'React', 'NextJS'] },
-            { name: 'facebook', description: 'React library creators, JavaScript frontend frameworks, social platform technology', tech_stack: ['JavaScript', 'React', 'PHP'] },
-            { name: 'microsoft', description: 'TypeScript creators, Visual Studio Code, extensive developer tools and enterprise software', tech_stack: ['TypeScript', 'C#', 'Python'] },
-            { name: 'google', description: 'Angular framework, Go language, extensive web technologies and cloud infrastructure', tech_stack: ['Go', 'TypeScript', 'Python'] },
-            { name: 'airbnb', description: 'JavaScript style guides, React components, frontend development best practices', tech_stack: ['JavaScript', 'React', 'CSS'] },
-            { name: 'openai', description: 'AI research and development, machine learning models, Python-based AI tools', tech_stack: ['Python', 'AI', 'ML'] },
-            { name: 'huggingface', description: 'Machine learning models, transformers library, AI model sharing platform', tech_stack: ['Python', 'ML', 'AI'] },
-            { name: 'hashicorp', description: 'Infrastructure automation, DevOps tools, Go-based system utilities', tech_stack: ['Go', 'DevOps', 'Infrastructure'] },
-            { name: 'netlify', description: 'JAMstack deployment platform, serverless functions, modern web development', tech_stack: ['JavaScript', 'JAMstack', 'Serverless'] },
-            { name: 'stripe', description: 'Payment processing APIs, fintech infrastructure, developer-first payment solutions', tech_stack: ['Ruby', 'JavaScript', 'Python'] }
-        ];
+        // AI-powered company classification
+        const companyType = await fastAI.classifyCompany(
+            `${repoData.description} ${repoData.language} ${repoData.topics?.join(' ')}`
+        );
         
-        const similarCompanies = await fastAI.findSimilarCompanies(targetCompany, knownCompanies);
+        // Dynamic company discovery using AI and GitHub Search
+        console.log(`🔍 [API] Discovering similar companies dynamically...`);
+        const discoveredSimilarCompanies = await fastAI.discoverSimilarCompanies(
+            repoAnalysisData, 
+            githubClient
+        );
         
-        // Step 7: Build response
+        // Enhanced contributor analysis across similar repositories
+        console.log(`👥 [API] Analyzing contributors across similar repositories...`);
+        const similarRepoData = discoveredSimilarCompanies.slice(0, 3).map(company => ({
+            owner: company.name,
+            name: company.sample_repo.name,
+            language: company.sample_repo.language
+        }));
+        
+        const crossRepoContributors = await fastAI.analyzeSimilarContributors(
+            repoAnalysisData,
+            similarRepoData,
+            githubClient
+        );
+        
+        // Enhanced company profile with AI insights
+        const enhancedCompanyProfile = {
+            name: owner,
+            type: companyType,
+            description: `${owner} is a ${companyType.toLowerCase()} organization with ${ownerRepos.length} repositories. Primary languages: ${Array.from(new Set(ownerRepos.map(r => r.language).filter(Boolean))).slice(0, 5).join(', ')}. Total ${ownerRepos.reduce((sum, repo) => sum + repo.stargazers_count, 0)} stars across projects.`,
+            tech_stack: Array.from(new Set(ownerRepos.map(r => r.language).filter(Boolean))).slice(0, 8),
+            total_repositories: ownerRepos.length,
+            total_stars: ownerRepos.reduce((sum, repo) => sum + repo.stargazers_count, 0),
+            top_repositories: ownerRepos.slice(0, 5).map(repo => ({
+                name: repo.name,
+                description: repo.description,
+                language: repo.language,
+                stars: repo.stargazers_count
+            })),
+            ai_classification: companyType,
+            discovery_method: 'AI-Enhanced Analysis'
+        };
+        
+        // Build comprehensive response
         const response = {
             success: true,
             analyzed_repository: {
@@ -133,24 +150,27 @@ app.post('/analyze', async (req, res) => {
                 forks: repoData.forks_count,
                 url: repoData.html_url
             },
-            company_profile: {
-                name: owner,
-                type: companyType,
-                description: companyDescription,
-                tech_stack: techStack.slice(0, 5),
-                total_repositories: ownerRepos.length,
-                total_stars: totalStars,
-                top_repositories: ownerRepos.slice(0, 5).map(r => ({
-                    name: r.name,
-                    description: r.description,
-                    language: r.language,
-                    stars: r.stargazers_count
-                }))
-            },
-            similar_companies: similarCompanies.slice(0, 5).map(comp => ({
-                name: comp.company,
-                similarity_score: Math.round(comp.similarity * 100) / 100,
-                reasoning: comp.reasoning
+            company_profile: enhancedCompanyProfile,
+            discovered_similar_companies: discoveredSimilarCompanies.map(company => ({
+                name: company.name,
+                avatar: company.avatar,
+                type: company.type,
+                similarity_score: company.similarity_score,
+                sample_repository: company.sample_repo,
+                reasoning: company.reasoning,
+                discovery_method: 'AI-Powered GitHub Search'
+            })),
+            cross_repo_contributors: crossRepoContributors.map(contributor => ({
+                username: contributor.username,
+                avatar: contributor.avatar,
+                profile: contributor.profile,
+                throughput_score: contributor.throughput_score,
+                activity_level: contributor.activity_level,
+                specialization: contributor.specialization,
+                assessment: contributor.assessment,
+                repositories_contributed: contributor.repos_contributed,
+                total_contributions: contributor.total_contributions,
+                metrics: contributor.metrics
             })),
             top_contributors: contributors.slice(0, 5).map(c => ({
                 username: c.login,
@@ -161,11 +181,14 @@ app.post('/analyze', async (req, res) => {
             metadata: {
                 processing_time_ms: Date.now() - startTime,
                 ai_powered: true,
-                analysis_date: new Date().toISOString()
+                analysis_date: new Date().toISOString(),
+                discovery_methods: ['AI Classification', 'Semantic Search', 'GitHub API', 'Cross-Repository Analysis'],
+                total_companies_discovered: discoveredSimilarCompanies.length,
+                cross_repo_contributors_analyzed: crossRepoContributors.length
             }
         };
         
-        console.log(`✅ [API] Analysis completed in ${Date.now() - startTime}ms`);
+        console.log(`✅ [API] Enhanced analysis completed in ${Date.now() - startTime}ms`);
         res.json(response);
         
     } catch (error) {
@@ -199,10 +222,17 @@ app.get('/health', (req, res) => {
     res.json({
         status: 'healthy',
         service: 'AI Repository Analysis API',
-        version: '1.0.0',
+        version: '2.0.0',
         ai_enabled: true,
+        enhanced_features: [
+            'Dynamic Company Discovery',
+            'Cross-Repository Contributor Analysis', 
+            'AI-Powered Throughput Assessment',
+            'Semantic Similarity Matching'
+        ],
         endpoints: [
-            'POST /analyze - Analyze repository and find similar companies'
+            'POST /analyze - Enhanced repository analysis with AI-powered discovery',
+            'GET /health - Service status and capabilities'
         ]
     });
 });
@@ -215,8 +245,15 @@ app.get('/', (req, res) => {
     } else {
         // Return JSON for API clients
         res.json({
-            service: '🚀 AI Repository Analysis API',
-            description: 'Analyze GitHub repositories and find similar companies using AI',
+            service: '🚀 AI Repository Analysis API v2.0',
+            description: 'Enhanced AI-powered repository analysis with dynamic company discovery and contributor assessment',
+            features: [
+                'Dynamic similar company discovery via AI',
+                'Cross-repository contributor analysis',
+                'AI-powered throughput scoring',
+                'Semantic similarity matching',
+                'Real-time GitHub search integration'
+            ],
             usage: {
                 endpoint: 'POST /analyze',
                 body: {
@@ -233,22 +270,23 @@ app.get('/', (req, res) => {
 if (process.env.NODE_ENV !== 'test') {
     app.listen(port, () => {
         console.log(`🎉 ===============================================`);
-        console.log(`🚀 AI REPOSITORY ANALYSIS API READY!`);
+        console.log(`🚀 AI REPOSITORY ANALYSIS API v2.0 READY!`);
         console.log(`🎉 ===============================================`);
         console.log(`📡 Server: http://localhost:${port}`);
         console.log(`🔍 Analyze: POST http://localhost:${port}/analyze`);
         console.log(`❤️  Health: GET http://localhost:${port}/health`);
-        console.log(`🤖 AI Features:`);
+        console.log(`🤖 Enhanced AI Features:`);
+        console.log(`   • Dynamic Company Discovery: ✅`);
+        console.log(`   • Cross-Repository Analysis: ✅`);
+        console.log(`   • AI Throughput Assessment: ✅`);
         console.log(`   • HuggingFace Classification: ✅`);
         console.log(`   • Semantic Similarity: ✅`);
-        console.log(`   • Company Analysis: ✅`);
-        console.log(`   • Contributor Analysis: ✅`);
         console.log(`📝 Example:`);
         console.log(`curl -X POST http://localhost:${port}/analyze \\`);
         console.log(`  -H "Content-Type: application/json" \\`);
         console.log(`  -d '{"repoUrl": "https://github.com/facebook/react"}'`);
-        console.log(`🚀 READY FOR UI INTEGRATION!`);
+        console.log(`🚀 READY FOR ENHANCED AI ANALYSIS!`);
     });
 }
 
-module.exports = app; 
+module.exports = app;

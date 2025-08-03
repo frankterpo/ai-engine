@@ -124,29 +124,102 @@
                     </div>
                 </div>
 
-                <!-- Similar Companies -->
+                <!-- Discovered Similar Companies -->
                 <div class="bg-white rounded-2xl shadow-xl p-8">
                     <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
-                        🎯 Similar Companies
+                        🔍 AI-Discovered Similar Companies
+                        <span class="ml-2 text-sm bg-purple-100 text-purple-800 px-2 py-1 rounded-full">ENHANCED</span>
                     </h2>
                     <div class="space-y-4">
-                        <template x-for="company in results?.similar_companies || []">
+                        <template x-for="company in results?.discovered_similar_companies || []">
                             <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
-                                <div class="flex justify-between items-start mb-2">
-                                    <h3 class="font-semibold text-lg" x-text="company.name"></h3>
-                                    <span class="bg-blue-100 text-blue-800 text-sm px-2 py-1 rounded-full" 
-                                          x-text="Math.round(company.similarity_score * 100) + '%'"></span>
+                                <div class="flex items-start gap-4">
+                                    <img :src="company.avatar" :alt="company.name" class="w-12 h-12 rounded-full">
+                                    <div class="flex-1">
+                                        <div class="flex justify-between items-start mb-2">
+                                            <div>
+                                                <h3 class="font-semibold text-lg" x-text="company.name"></h3>
+                                                <span class="text-xs text-gray-500" x-text="company.type"></span>
+                                            </div>
+                                            <span class="bg-blue-100 text-blue-800 text-sm px-2 py-1 rounded-full" 
+                                                  x-text="Math.round(company.similarity_score * 100) + '%'"></span>
+                                        </div>
+                                        <div class="mb-2">
+                                            <p class="text-sm text-gray-700"><strong>Sample Repo:</strong> <span x-text="company.sample_repository?.name"></span></p>
+                                            <p class="text-xs text-gray-600" x-text="company.sample_repository?.description"></p>
+                                            <div class="flex items-center gap-2 mt-1">
+                                                <span class="text-xs bg-gray-100 px-2 py-1 rounded" x-text="company.sample_repository?.language"></span>
+                                                <span class="text-xs text-gray-500">⭐ <span x-text="company.sample_repository?.stars?.toLocaleString()"></span></span>
+                                            </div>
+                                        </div>
+                                        <p class="text-gray-600 text-sm"><strong>Why Similar:</strong> <span x-text="company.reasoning"></span></p>
+                                        <span class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full" x-text="company.discovery_method"></span>
+                                    </div>
                                 </div>
-                                <p class="text-gray-600 text-sm" x-text="company.reasoning"></p>
                             </div>
                         </template>
                     </div>
                 </div>
 
-                <!-- Top Contributors -->
+                <!-- Cross-Repository Contributors -->
                 <div class="bg-white rounded-2xl shadow-xl p-8">
                     <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
-                        👥 Top Contributors
+                        🚀 High-Throughput Contributors
+                        <span class="ml-2 text-sm bg-purple-100 text-purple-800 px-2 py-1 rounded-full">AI-SCORED</span>
+                    </h2>
+                    <div class="grid sm:grid-cols-1 lg:grid-cols-2 gap-4">
+                        <template x-for="contributor in results?.cross_repo_contributors || []">
+                            <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                                <div class="flex items-start gap-3">
+                                    <img :src="contributor.avatar" :alt="contributor.username" class="w-10 h-10 rounded-full">
+                                    <div class="flex-1 min-w-0">
+                                        <div class="flex justify-between items-start mb-2">
+                                            <div>
+                                                <h3 class="font-semibold text-base" x-text="contributor.username"></h3>
+                                                <span class="text-xs text-gray-500" x-text="contributor.specialization"></span>
+                                            </div>
+                                            <div class="text-right">
+                                                <div class="text-lg font-bold" 
+                                                     :class="contributor.throughput_score > 80 ? 'text-green-600' : contributor.throughput_score > 60 ? 'text-blue-600' : contributor.throughput_score > 40 ? 'text-yellow-600' : 'text-gray-600'"
+                                                     x-text="contributor.throughput_score"></div>
+                                                <div class="text-xs text-gray-500">Throughput</div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="mb-2">
+                                            <span class="text-xs px-2 py-1 rounded-full"
+                                                  :class="contributor.activity_level === 'Very High' ? 'bg-green-100 text-green-800' : 
+                                                          contributor.activity_level === 'High' ? 'bg-blue-100 text-blue-800' : 
+                                                          contributor.activity_level === 'Moderate' ? 'bg-yellow-100 text-yellow-800' : 'bg-gray-100 text-gray-800'"
+                                                  x-text="contributor.activity_level + ' Activity'"></span>
+                                        </div>
+                                        
+                                        <p class="text-xs text-gray-600 mb-2" x-text="contributor.assessment"></p>
+                                        
+                                        <div class="text-xs text-gray-500">
+                                            <div class="flex justify-between">
+                                                <span>Repos: <span x-text="contributor.repositories_contributed?.length"></span></span>
+                                                <span>Contributions: <span x-text="contributor.total_contributions"></span></span>
+                                            </div>
+                                            <div class="flex justify-between mt-1">
+                                                <span>Followers: <span x-text="contributor.metrics?.followers"></span></span>
+                                                <span>Public Repos: <span x-text="contributor.metrics?.repos_count"></span></span>
+                                            </div>
+                                        </div>
+                                        
+                                        <a :href="contributor.profile" target="_blank" 
+                                           class="inline-block mt-2 text-blue-600 hover:text-blue-800 text-xs">View Profile →</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+
+                <!-- Top Contributors (Original Repository) -->
+                <div class="bg-white rounded-2xl shadow-xl p-8">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                        👥 Top Repository Contributors
                     </h2>
                     <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
                         <template x-for="contributor in results?.top_contributors || []">
@@ -162,12 +235,23 @@
                     </div>
                 </div>
 
-                <!-- Metadata -->
+                <!-- Enhanced Metadata -->
                 <div class="bg-gray-100 rounded-lg p-4 text-center text-sm text-gray-600">
-                    <p>
-                        Analysis completed in <span x-text="results?.metadata?.processing_time_ms"></span>ms
-                        • AI-Powered Analysis • <span x-text="new Date(results?.metadata?.analysis_date).toLocaleString()"></span>
-                    </p>
+                    <div class="grid md:grid-cols-2 gap-4 mb-2">
+                        <div>
+                            <p><strong>Analysis Time:</strong> <span x-text="results?.metadata?.processing_time_ms"></span>ms</p>
+                            <p><strong>Companies Discovered:</strong> <span x-text="results?.metadata?.total_companies_discovered"></span></p>
+                        </div>
+                        <div>
+                            <p><strong>Contributors Analyzed:</strong> <span x-text="results?.metadata?.cross_repo_contributors_analyzed"></span></p>
+                            <p><strong>Analysis Date:</strong> <span x-text="new Date(results?.metadata?.analysis_date).toLocaleString()"></span></p>
+                        </div>
+                    </div>
+                    <div class="flex flex-wrap justify-center gap-2">
+                        <template x-for="method in results?.metadata?.discovery_methods || []">
+                            <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full" x-text="method"></span>
+                        </template>
+                    </div>
                 </div>
             </div>
         </div>
