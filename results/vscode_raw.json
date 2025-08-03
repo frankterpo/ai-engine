@@ -1,0 +1,662 @@
+{
+  "success": true,
+  "originalRepo": {
+    "owner": "microsoft",
+    "name": "vscode",
+    "full_name": "microsoft/vscode",
+    "url": "https://github.com/microsoft/vscode",
+    "language": "TypeScript",
+    "topics": [
+      "editor",
+      "electron",
+      "microsoft",
+      "typescript",
+      "visual-studio-code"
+    ],
+    "stars": 175254,
+    "forks": 34115,
+    "description": "Visual Studio Code"
+  },
+  "similarRepos": [
+    {
+      "name": "vscodius",
+      "full_name": "RubisetCie/vscodius",
+      "url": "https://github.com/RubisetCie/vscodius",
+      "stars": 12,
+      "description": "Binary releases of Visual Studio Code without MS branding/telemetry/licensing and various personal workflow improvements.",
+      "language": "TypeScript",
+      "topics": [
+        "editor",
+        "electron",
+        "microsoft",
+        "typescript",
+        "visual-studio-code"
+      ],
+      "forks": 0,
+      "updated": "2025-06-03T07:43:35Z",
+      "strategy": "Language+Topics",
+      "score": 5,
+      "strategies": [
+        "Language+Topics"
+      ],
+      "relevanceScore": 28.870272935132142,
+      "finalScore": 33.87027293513214
+    },
+    {
+      "name": "mkeditor",
+      "full_name": "versyxdigital/mkeditor",
+      "url": "https://github.com/versyxdigital/mkeditor",
+      "stars": 23,
+      "description": "MKEditor - the simple markdown editor.",
+      "language": "TypeScript",
+      "topics": [
+        "bootstrap",
+        "crowdstrike",
+        "editing",
+        "editor",
+        "electron",
+        "fontawesome",
+        "highlightjs",
+        "html",
+        "javascript",
+        "js",
+        "markdown",
+        "markdown-it",
+        "microsoft",
+        "monaco-editor",
+        "ts",
+        "typescript",
+        "vscode"
+      ],
+      "forks": 1,
+      "updated": "2025-07-30T21:26:34Z",
+      "strategy": "Language+Topics",
+      "score": 5,
+      "strategies": [
+        "Language+Topics"
+      ],
+      "relevanceScore": 23.13654082453691,
+      "finalScore": 28.13654082453691
+    },
+    {
+      "name": "angular",
+      "full_name": "angular/angular",
+      "url": "https://github.com/angular/angular",
+      "stars": 98391,
+      "description": "Deliver web apps with confidence 🚀",
+      "language": "TypeScript",
+      "topics": [
+        "angular",
+        "javascript",
+        "pwa",
+        "typescript",
+        "web",
+        "web-framework",
+        "web-performance"
+      ],
+      "forks": 26473,
+      "updated": "2025-08-02T17:23:48Z",
+      "strategy": "Activity + Architecture Patterns + Community Patterns + License Compatibility",
+      "score": 10,
+      "strategies": [
+        "Activity",
+        "Architecture Patterns",
+        "Community Patterns",
+        "License Compatibility"
+      ],
+      "relevanceScore": 17.749289371326803,
+      "finalScore": 27.749289371326803
+    },
+    {
+      "name": "azuredatastudio",
+      "full_name": "microsoft/azuredatastudio",
+      "url": "https://github.com/microsoft/azuredatastudio",
+      "stars": 7695,
+      "description": "Azure Data Studio is a data management and development tool with connectivity to popular cloud and on-premises databases. Azure Data Studio supports Windows, macOS, and Linux, with immediate capability to connect to Azure SQL and SQL Server. Browse the extension library for more database support options including MySQL, PostgreSQL, and MongoDB.",
+      "language": "TypeScript",
+      "topics": [
+        "azure",
+        "azure-data-studio",
+        "electron",
+        "microsoft",
+        "postgresql",
+        "sql",
+        "sql-server",
+        "typescript"
+      ],
+      "forks": 942,
+      "updated": "2025-08-02T09:24:02Z",
+      "strategy": "Name Similarity",
+      "score": 2,
+      "strategies": [
+        "Name Similarity"
+      ],
+      "relevanceScore": 24.642594641855062,
+      "finalScore": 26.642594641855062
+    },
+    {
+      "name": "vscode-restclient",
+      "full_name": "Huachao/vscode-restclient",
+      "url": "https://github.com/Huachao/vscode-restclient",
+      "stars": 5674,
+      "description": "REST Client Extension for Visual Studio Code",
+      "language": "TypeScript",
+      "topics": [
+        "graphql",
+        "http",
+        "http-client",
+        "rest",
+        "rest-api",
+        "rest-client",
+        "typescript",
+        "visual-studio-code",
+        "vscode",
+        "vscode-extension"
+      ],
+      "forks": 486,
+      "updated": "2025-08-01T09:02:50Z",
+      "strategy": "Semantic",
+      "score": 4,
+      "strategies": [
+        "Semantic"
+      ],
+      "relevanceScore": 22.510295448690467,
+      "finalScore": 26.510295448690467
+    },
+    {
+      "name": "prettier-vscode",
+      "full_name": "prettier/prettier-vscode",
+      "url": "https://github.com/prettier/prettier-vscode",
+      "stars": 5323,
+      "description": "Visual Studio Code extension for Prettier",
+      "language": "TypeScript",
+      "topics": [
+        "formatter",
+        "typescript",
+        "visual-studio-code",
+        "visual-studio-code-extension"
+      ],
+      "forks": 479,
+      "updated": "2025-08-01T19:53:08Z",
+      "strategy": "Semantic",
+      "score": 4,
+      "strategies": [
+        "Semantic"
+      ],
+      "relevanceScore": 22.482567629627944,
+      "finalScore": 26.482567629627944
+    },
+    {
+      "name": "n8n",
+      "full_name": "n8n-io/n8n",
+      "url": "https://github.com/n8n-io/n8n",
+      "stars": 126106,
+      "description": "Fair-code workflow automation platform with native AI capabilities. Combine visual building with custom code, self-host or cloud, 400+ integrations.",
+      "language": "TypeScript",
+      "topics": [
+        "ai",
+        "apis",
+        "automation",
+        "cli",
+        "data-flow",
+        "development",
+        "integration-framework",
+        "integrations",
+        "ipaas",
+        "low-code",
+        "low-code-platform",
+        "mcp",
+        "mcp-client",
+        "mcp-server",
+        "n8n",
+        "no-code",
+        "self-hosted",
+        "typescript",
+        "workflow",
+        "workflow-automation"
+      ],
+      "forks": 38498,
+      "updated": "2025-08-02T17:47:52Z",
+      "strategy": "Activity + Community Patterns",
+      "score": 5,
+      "strategies": [
+        "Activity",
+        "Community Patterns"
+      ],
+      "relevanceScore": 20.857068777066885,
+      "finalScore": 25.857068777066885
+    },
+    {
+      "name": "onlook",
+      "full_name": "onlook-dev/onlook",
+      "url": "https://github.com/onlook-dev/onlook",
+      "stars": 21217,
+      "description": "The Cursor for Designers • An Open-Source Visual Vibecoding Editor • Visually build, style, and edit your React App with AI",
+      "language": "TypeScript",
+      "topics": [
+        "cursor",
+        "cursor-ai",
+        "design",
+        "design-to-code",
+        "drizzle",
+        "editor",
+        "figma",
+        "frontend",
+        "hacktoberfest",
+        "ide",
+        "low-code",
+        "nextjs",
+        "react",
+        "supabase",
+        "tailwindcss",
+        "typescript",
+        "ui",
+        "vibe-coding",
+        "webflow"
+      ],
+      "forks": 1428,
+      "updated": "2025-08-02T17:15:59Z",
+      "strategy": "Recent Trends",
+      "score": 3,
+      "strategies": [
+        "Recent Trends"
+      ],
+      "relevanceScore": 21.083034027899632,
+      "finalScore": 24.083034027899632
+    },
+    {
+      "name": "Vim",
+      "full_name": "VSCodeVim/Vim",
+      "url": "https://github.com/VSCodeVim/Vim",
+      "stars": 14711,
+      "description": ":star: Vim for Visual Studio Code",
+      "language": "TypeScript",
+      "topics": [
+        "keybindings",
+        "typescript",
+        "vim",
+        "vscode",
+        "vscode-extension"
+      ],
+      "forks": 1389,
+      "updated": "2025-08-02T11:10:41Z",
+      "strategy": "Semantic",
+      "score": 4,
+      "strategies": [
+        "Semantic"
+      ],
+      "relevanceScore": 19.924001299055327,
+      "finalScore": 23.924001299055327
+    },
+    {
+      "name": "vscode-go",
+      "full_name": "golang/vscode-go",
+      "url": "https://github.com/golang/vscode-go",
+      "stars": 4095,
+      "description": "Go extension for Visual Studio Code",
+      "language": "TypeScript",
+      "topics": [
+        "debugger",
+        "golang",
+        "visual-studio-code",
+        "vscode",
+        "vscode-extension"
+      ],
+      "forks": 816,
+      "updated": "2025-08-01T10:26:02Z",
+      "strategy": "Semantic",
+      "score": 4,
+      "strategies": [
+        "Semantic"
+      ],
+      "relevanceScore": 19.36868953079308,
+      "finalScore": 23.36868953079308
+    },
+    {
+      "name": "void",
+      "full_name": "voideditor/void",
+      "url": "https://github.com/voideditor/void",
+      "stars": 26313,
+      "description": null,
+      "language": "TypeScript",
+      "topics": [
+        "chatgpt",
+        "claude",
+        "copilot",
+        "cursor",
+        "developer-tools",
+        "editor",
+        "llm",
+        "open-source",
+        "openai",
+        "visual-studio-code",
+        "vscode",
+        "vscode-extension"
+      ],
+      "forks": 1861,
+      "updated": "2025-08-02T16:36:22Z",
+      "strategy": "Recent Trends",
+      "score": 3,
+      "strategies": [
+        "Recent Trends"
+      ],
+      "relevanceScore": 20.176516453179595,
+      "finalScore": 23.176516453179595
+    },
+    {
+      "name": "chartdb",
+      "full_name": "chartdb/chartdb",
+      "url": "https://github.com/chartdb/chartdb",
+      "stars": 17563,
+      "description": "Database diagrams editor that allows you to visualize and design your DB with a single query.",
+      "language": "TypeScript",
+      "topics": [
+        "database",
+        "db",
+        "db-migration",
+        "editor",
+        "erd",
+        "mariadb",
+        "mssql",
+        "mysql",
+        "postgresql",
+        "react",
+        "react-flow",
+        "schema-migrations",
+        "sql",
+        "sqlite",
+        "typescript",
+        "visualization",
+        "xyflow"
+      ],
+      "forks": 931,
+      "updated": "2025-08-02T16:44:20Z",
+      "strategy": "Recent Trends",
+      "score": 3,
+      "strategies": [
+        "Recent Trends"
+      ],
+      "relevanceScore": 20.000953011257657,
+      "finalScore": 23.000953011257657
+    },
+    {
+      "name": "TypeScript",
+      "full_name": "microsoft/TypeScript",
+      "url": "https://github.com/microsoft/TypeScript",
+      "stars": 105477,
+      "description": "TypeScript is a superset of JavaScript that compiles to clean JavaScript output.",
+      "language": "TypeScript",
+      "topics": [
+        "javascript",
+        "language",
+        "typechecker",
+        "typescript"
+      ],
+      "forks": 12944,
+      "updated": "2025-08-02T17:35:08Z",
+      "strategy": "Activity + Community Patterns",
+      "score": 5,
+      "strategies": [
+        "Activity",
+        "Community Patterns"
+      ],
+      "relevanceScore": 17.77949146923682,
+      "finalScore": 22.77949146923682
+    },
+    {
+      "name": "storybook",
+      "full_name": "storybookjs/storybook",
+      "url": "https://github.com/storybookjs/storybook",
+      "stars": 87400,
+      "description": "Storybook is the industry standard workshop for building, documenting, and testing UI components in isolation",
+      "language": "TypeScript",
+      "topics": [
+        "angular",
+        "components",
+        "design-systems",
+        "documentation",
+        "html",
+        "javascript",
+        "react",
+        "react-native",
+        "stories",
+        "storybook",
+        "styleguide",
+        "svelte",
+        "testing",
+        "typescript",
+        "ui",
+        "vite",
+        "vue",
+        "web-components",
+        "webpack",
+        "workshop"
+      ],
+      "forks": 9635,
+      "updated": "2025-08-02T16:25:00Z",
+      "strategy": "Architecture Patterns + License Compatibility",
+      "score": 5,
+      "strategies": [
+        "Architecture Patterns",
+        "License Compatibility"
+      ],
+      "relevanceScore": 17.6978459844757,
+      "finalScore": 22.6978459844757
+    },
+    {
+      "name": "nest",
+      "full_name": "nestjs/nest",
+      "url": "https://github.com/nestjs/nest",
+      "stars": 72042,
+      "description": "A progressive Node.js framework for building efficient, scalable, and enterprise-grade server-side applications with TypeScript/JavaScript 🚀",
+      "language": "TypeScript",
+      "topics": [
+        "framework",
+        "hacktoberfest",
+        "javascript",
+        "javascript-framework",
+        "microservices",
+        "nest",
+        "nestjs",
+        "node",
+        "nodejs",
+        "nodejs-framework",
+        "typescript",
+        "typescript-framework",
+        "websockets"
+      ],
+      "forks": 7961,
+      "updated": "2025-08-02T17:34:41Z",
+      "strategy": "Architecture Patterns + License Compatibility",
+      "score": 5,
+      "strategies": [
+        "Architecture Patterns",
+        "License Compatibility"
+      ],
+      "relevanceScore": 17.61392137215212,
+      "finalScore": 22.61392137215212
+    },
+    {
+      "name": "vscode-cpptools",
+      "full_name": "microsoft/vscode-cpptools",
+      "url": "https://github.com/microsoft/vscode-cpptools",
+      "stars": 5868,
+      "description": "Official repository for the Microsoft C/C++ extension for VS Code.",
+      "language": "TypeScript",
+      "topics": [
+        "microsoft",
+        "typescript",
+        "vscode-extension"
+      ],
+      "forks": 1632,
+      "updated": "2025-08-02T06:17:42Z",
+      "strategy": "Name Similarity",
+      "score": 2,
+      "strategies": [
+        "Name Similarity"
+      ],
+      "relevanceScore": 20.524893692338882,
+      "finalScore": 22.524893692338882
+    },
+    {
+      "name": "ionic-framework",
+      "full_name": "ionic-team/ionic-framework",
+      "url": "https://github.com/ionic-team/ionic-framework",
+      "stars": 51941,
+      "description": "A powerful cross-platform UI toolkit for building native-quality iOS, Android, and Progressive Web Apps with HTML, CSS, and JavaScript.",
+      "language": "TypeScript",
+      "topics": [
+        "angular",
+        "capacitor",
+        "framework",
+        "frontend",
+        "ionic",
+        "ios",
+        "javascript",
+        "material-design",
+        "mobile",
+        "pwa",
+        "react",
+        "stencil",
+        "stenciljs",
+        "typescript",
+        "vue",
+        "web",
+        "webcomponents"
+      ],
+      "forks": 13440,
+      "updated": "2025-08-02T16:33:04Z",
+      "strategy": "Architecture Patterns + License Compatibility",
+      "score": 5,
+      "strategies": [
+        "Architecture Patterns",
+        "License Compatibility"
+      ],
+      "relevanceScore": 17.47184825072624,
+      "finalScore": 22.47184825072624
+    },
+    {
+      "name": "colanode",
+      "full_name": "colanode/colanode",
+      "url": "https://github.com/colanode/colanode",
+      "stars": 3296,
+      "description": "Open-source and local-first Slack and Notion alternative that puts you in control of your data",
+      "language": "TypeScript",
+      "topics": [
+        "chat",
+        "chat-application",
+        "crdt",
+        "editor",
+        "electron",
+        "knowledge-base",
+        "local-first",
+        "notion",
+        "notion-alternative",
+        "realtime-collaboration",
+        "self-hosted",
+        "slack",
+        "sqlite",
+        "team-collaboration",
+        "wiki",
+        "yjs"
+      ],
+      "forks": 163,
+      "updated": "2025-08-02T17:13:13Z",
+      "strategy": "Recent Trends",
+      "score": 3,
+      "strategies": [
+        "Recent Trends"
+      ],
+      "relevanceScore": 19.27444852996846,
+      "finalScore": 22.27444852996846
+    },
+    {
+      "name": "frontend-bootcamp",
+      "full_name": "microsoft/frontend-bootcamp",
+      "url": "https://github.com/microsoft/frontend-bootcamp",
+      "stars": 10814,
+      "description": "Frontend Workshop from HTML/CSS/JS to TypeScript/React/Redux",
+      "language": "TypeScript",
+      "topics": [
+        "css",
+        "css-in-js",
+        "html",
+        "javascript",
+        "microsoft",
+        "office-ui-fabric-react",
+        "react",
+        "redux",
+        "redux-thunk",
+        "typescript"
+      ],
+      "forks": 1211,
+      "updated": "2025-08-01T03:18:45Z",
+      "strategy": "Name Similarity",
+      "score": 2,
+      "strategies": [
+        "Name Similarity"
+      ],
+      "relevanceScore": 19.790356106600417,
+      "finalScore": 21.790356106600417
+    },
+    {
+      "name": "docx",
+      "full_name": "dolanmiu/docx",
+      "url": "https://github.com/dolanmiu/docx",
+      "stars": 5087,
+      "description": "Easily generate and modify .docx files with JS/TS with a nice declarative API. Works for Node and on the Browser.",
+      "language": "TypeScript",
+      "topics": [
+        "angular",
+        "angular2",
+        "browser",
+        "create",
+        "docs",
+        "document",
+        "docx",
+        "docx-generator",
+        "express",
+        "expressjs",
+        "generate",
+        "javascript",
+        "microsoft",
+        "nodejs",
+        "office",
+        "react",
+        "typescript",
+        "vuejs",
+        "word"
+      ],
+      "forks": 549,
+      "updated": "2025-08-02T04:34:38Z",
+      "strategy": "Name Similarity",
+      "score": 2,
+      "strategies": [
+        "Name Similarity"
+      ],
+      "relevanceScore": 19.462876685465666,
+      "finalScore": 21.462876685465666
+    }
+  ],
+  "searchStrategies": [
+    "Language + Topics",
+    "Dependencies Analysis",
+    "Semantic Keywords",
+    "Activity Similarity",
+    "Architecture Patterns",
+    "Domain Discovery",
+    "Tech Stack Ecosystem",
+    "Community Patterns",
+    "Recent Trends",
+    "Name Similarity",
+    "License Compatibility",
+    "Scale Similarity"
+  ],
+  "metadata": {
+    "totalFound": 20,
+    "searchDuration": 1188,
+    "version": "ultra-enhanced-v2.0",
+    "strategiesUsed": 1,
+    "averageRelevanceScore": "24.57"
+  }
+}

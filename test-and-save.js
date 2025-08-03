@@ -1,0 +1,138 @@
+#!/usr/bin/env node
+
+// Test RepoSimilarityScout and save results to files
+const axios = require('axios');
+const fs = require('fs');
+const path = require('path');
+
+const API_BASE = 'http://localhost:4000';
+
+async function testAndSaveResults() {
+  console.log('🔍 Testing RepoSimilarityScout and saving results...\n');
+
+  // Create results directory
+  const resultsDir = 'results';
+  if (!fs.existsSync(resultsDir)) {
+    fs.mkdirSync(resultsDir);
+  }
+
+  const testRepos = [
+    { url: 'https://github.com/microsoft/vscode', name: 'vscode' },
+    { url: 'https://github.com/facebook/react', name: 'react' },
+    { url: 'https://github.com/vercel/next.js', name: 'nextjs' },
+    { url: 'https://github.com/tensorflow/tensorflow', name: 'tensorflow' },
+    { url: 'https://github.com/microsoft/TypeScript', name: 'typescript' }
+  ];
+
+  for (const repo of testRepos) {
+    try {
+      console.log(`📊 Testing ${repo.name}...`);
+      const startTime = Date.now();
+      
+      const response = await axios.post(`${API_BASE}/scout`, {
+        repoUrl: repo.url,
+        limit: 20
+      }, {
+        timeout: 30000
+      });
+
+      const duration = Date.now() - startTime;
+      console.log(`✅ ${repo.name}: ${response.data.similarRepos.length} results in ${duration}ms`);
+
+      // Save raw JSON
+      const rawPath = path.join(resultsDir, `${repo.name}_raw.json`);
+      fs.writeFileSync(rawPath, JSON.stringify(response.data, null, 2));
+
+      // Save formatted summary
+      const summary = {
+        repository: {
+          name: response.data.originalRepo.full_name,
+          language: response.data.originalRepo.language,
+          stars: response.data.originalRepo.stars,
+          topics: response.data.originalRepo.topics,
+          description: response.data.originalRepo.description
+        },
+        analysis: {
+          total_similar_found: response.data.similarRepos.length,
+          search_duration_ms: response.data.metadata.searchDuration,
+          strategies_used: response.data.metadata.strategiesUsed,
+          average_relevance_score: response.data.metadata.averageRelevanceScore,
+          version: response.data.metadata.version
+        },
+        top_matches: response.data.similarRepos.slice(0, 10).map((repo, index) => ({
+          rank: index + 1,
+          name: repo.full_name,
+          stars: repo.stars,
+          description: repo.description,
+          language: repo.language,
+          topics: repo.topics,
+          strategies_matched: repo.strategies,
+          relevance_score: repo.relevanceScore?.toFixed(2),
+          final_score: repo.finalScore?.toFixed(2),
+          url: repo.url
+        })),
+        search_strategies_available: response.data.searchStrategies
+      };
+
+      const summaryPath = path.join(resultsDir, `${repo.name}_summary.json`);
+      fs.writeFileSync(summaryPath, JSON.stringify(summary, null, 2));
+
+      // Create readable report
+      const report = generateReadableReport(summary);
+      const reportPath = path.join(resultsDir, `${repo.name}_report.md`);
+      fs.writeFileSync(reportPath, report);
+
+      console.log(`📁 Saved: ${rawPath}, ${summaryPath}, ${reportPath}`);
+
+    } catch (error) {
+      console.error(`❌ Error testing ${repo.name}: ${error.message}`);
+    }
+  }
+
+  console.log(`\n✅ All results saved in ./${resultsDir}/ directory`);
+  console.log(`📊 View summary files: ls -la ${resultsDir}/*_summary.json`);
+  console.log(`📖 Read reports: ls -la ${resultsDir}/*_report.md`);
+}
+
+function generateReadableReport(summary) {
+  return `# Repository Similarity Analysis: ${summary.repository.name}
+
+## 📊 Repository Overview
+- **Name**: ${summary.repository.name}
+- **Language**: ${summary.repository.language}
+- **Stars**: ${summary.repository.stars?.toLocaleString()}
+- **Topics**: ${summary.repository.topics?.join(', ') || 'None'}
+- **Description**: ${summary.repository.description || 'No description'}
+
+## 🔍 Analysis Results
+- **Total Similar Repositories Found**: ${summary.analysis.total_similar_found}
+- **Search Duration**: ${summary.analysis.search_duration_ms}ms
+- **AI Strategies Used**: ${summary.analysis.strategies_used}
+- **Average Relevance Score**: ${summary.analysis.average_relevance_score}
+- **Analysis Version**: ${summary.analysis.version}
+
+## 🎯 Top 10 Similar Repositories
+
+${summary.top_matches.map(repo => `
+### ${repo.rank}. [${repo.name}](${repo.url}) ⭐${repo.stars?.toLocaleString()}
+- **Language**: ${repo.language || 'Unknown'}
+- **Description**: ${repo.description || 'No description'}
+- **Topics**: ${repo.topics?.join(', ') || 'None'}
+- **Strategies**: ${repo.strategies_matched?.join(', ') || 'Unknown'}
+- **Relevance Score**: ${repo.relevance_score}
+- **Final Score**: ${repo.final_score}
+`).join('')}
+
+## 🚀 Available Search Strategies
+${summary.search_strategies_available.map(strategy => `- ${strategy}`).join('\n')}
+
+---
+*Generated by Ultra-Enhanced RepoSimilarityScout*
+`;
+}
+
+if (require.main === module) {
+  testAndSaveResults().catch(console.error);
+}
+
+module.exports = { testAndSaveResults }; 

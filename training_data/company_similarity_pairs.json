@@ -1,0 +1,44 @@
+[
+  {
+    "company1_description": "Develop. Preview. Ship. Creators of Next.js. Focus on TypeScript, React, NextJS frameworks and developer tools.",
+    "company2_description": "React library creators. Focus on JavaScript, declarative UI, frontend frameworks and social platform technology.",
+    "similarity_score": 0.175,
+    "company1_name": "vercel",
+    "company2_name": "facebook"
+  },
+  {
+    "company1_description": "Develop. Preview. Ship. Creators of Next.js. Focus on TypeScript, React, NextJS frameworks and developer tools.",
+    "company2_description": "TypeScript creators, Visual Studio Code, extensive developer tools and enterprise software solutions.",
+    "similarity_score": 0.175,
+    "company1_name": "vercel",
+    "company2_name": "microsoft"
+  },
+  {
+    "company1_description": "Develop. Preview. Ship. Creators of Next.js. Focus on TypeScript, React, NextJS frameworks and developer tools.",
+    "company2_description": "Artificial intelligence research and deployment. Machine learning models, API services, and AI tools.",
+    "similarity_score": 0.0,
+    "company1_name": "vercel",
+    "company2_name": "openai"
+  },
+  {
+    "company1_description": "React library creators. Focus on JavaScript, declarative UI, frontend frameworks and social platform technology.",
+    "company2_description": "TypeScript creators, Visual Studio Code, extensive developer tools and enterprise software solutions.",
+    "similarity_score": 0.35,
+    "company1_name": "facebook",
+    "company2_name": "microsoft"
+  },
+  {
+    "company1_description": "React library creators. Focus on JavaScript, declarative UI, frontend frameworks and social platform technology.",
+    "company2_description": "Artificial intelligence research and deployment. Machine learning models, API services, and AI tools.",
+    "similarity_score": 0.35,
+    "company1_name": "facebook",
+    "company2_name": "openai"
+  },
+  {
+    "company1_description": "TypeScript creators, Visual Studio Code, extensive developer tools and enterprise software solutions.",
+    "company2_description": "Artificial intelligence research and deployment. Machine learning models, API services, and AI tools.",
+    "similarity_score": 0.35,
+    "company1_name": "microsoft",
+    "company2_name": "openai"
+  }
+]

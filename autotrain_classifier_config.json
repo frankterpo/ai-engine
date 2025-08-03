@@ -1,0 +1,23 @@
+{
+  "username": "your-username",
+  "project_name": "company-classifier-v1",
+  "task": "text_classification",
+  "base_model": "microsoft/mpnet-base",
+  "hub_dataset": "your-username/github-companies-classification",
+  "train_split": "train",
+  "hardware": "spaces-l40sx1",
+  "column_mapping": {
+    "text_column": "company_description",
+    "target_column": "company_type"
+  },
+  "params": {
+    "epochs": 3,
+    "batch_size": 16,
+    "lr": 2e-05,
+    "max_seq_length": 256,
+    "mixed_precision": "fp16",
+    "optimizer": "adamw_torch",
+    "scheduler": "linear",
+    "warmup_ratio": 0.1
+  }
+}

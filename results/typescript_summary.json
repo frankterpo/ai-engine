@@ -1,0 +1,333 @@
+{
+  "repository": {
+    "name": "microsoft/TypeScript",
+    "language": "TypeScript",
+    "stars": 105477,
+    "topics": [
+      "javascript",
+      "language",
+      "typechecker",
+      "typescript"
+    ],
+    "description": "TypeScript is a superset of JavaScript that compiles to clean JavaScript output."
+  },
+  "analysis": {
+    "total_similar_found": 20,
+    "search_duration_ms": 1815,
+    "strategies_used": 4,
+    "average_relevance_score": "24.61",
+    "version": "ultra-enhanced-v2.0"
+  },
+  "top_matches": [
+    {
+      "rank": 1,
+      "name": "angular/angular",
+      "stars": 98391,
+      "description": "Deliver web apps with confidence 🚀",
+      "language": "TypeScript",
+      "topics": [
+        "angular",
+        "javascript",
+        "pwa",
+        "typescript",
+        "web",
+        "web-framework",
+        "web-performance"
+      ],
+      "strategies_matched": [
+        "Activity",
+        "Architecture Patterns",
+        "Community Patterns",
+        "License Compatibility"
+      ],
+      "relevance_score": "20.97",
+      "final_score": "30.97",
+      "url": "https://github.com/angular/angular"
+    },
+    {
+      "rank": 2,
+      "name": "nestjs/nest",
+      "stars": 72042,
+      "description": "A progressive Node.js framework for building efficient, scalable, and enterprise-grade server-side applications with TypeScript/JavaScript 🚀",
+      "language": "TypeScript",
+      "topics": [
+        "framework",
+        "hacktoberfest",
+        "javascript",
+        "javascript-framework",
+        "microservices",
+        "nest",
+        "nestjs",
+        "node",
+        "nodejs",
+        "nodejs-framework",
+        "typescript",
+        "typescript-framework",
+        "websockets"
+      ],
+      "strategies_matched": [
+        "Architecture Patterns",
+        "License Compatibility"
+      ],
+      "relevance_score": "22.83",
+      "final_score": "27.83",
+      "url": "https://github.com/nestjs/nest"
+    },
+    {
+      "rank": 3,
+      "name": "ionic-team/ionic-framework",
+      "stars": 51941,
+      "description": "A powerful cross-platform UI toolkit for building native-quality iOS, Android, and Progressive Web Apps with HTML, CSS, and JavaScript.",
+      "language": "TypeScript",
+      "topics": [
+        "angular",
+        "capacitor",
+        "framework",
+        "frontend",
+        "ionic",
+        "ios",
+        "javascript",
+        "material-design",
+        "mobile",
+        "pwa",
+        "react",
+        "stencil",
+        "stenciljs",
+        "typescript",
+        "vue",
+        "web",
+        "webcomponents"
+      ],
+      "strategies_matched": [
+        "Architecture Patterns",
+        "License Compatibility"
+      ],
+      "relevance_score": "21.69",
+      "final_score": "26.69",
+      "url": "https://github.com/ionic-team/ionic-framework"
+    },
+    {
+      "rank": 4,
+      "name": "NativeScript/NativeScript",
+      "stars": 24927,
+      "description": "⚡ Empowering JavaScript with native platform APIs. ✨ Best of all worlds (TypeScript, Swift, Objective C, Kotlin, Java, Dart). Use what you love ❤️ Angular, React, Solid, Svelte, Vue with: iOS (UIKit, SwiftUI), Android (View, Jetpack Compose), Dart (Flutter) and you name it compatible.",
+      "language": "TypeScript",
+      "topics": [
+        "android",
+        "angular",
+        "capacitor",
+        "cross-platform",
+        "flutter",
+        "ios",
+        "java",
+        "javascript",
+        "kotlin",
+        "nativescript",
+        "objective-c",
+        "react",
+        "solidjs",
+        "svelte",
+        "swift",
+        "swiftui",
+        "typescript",
+        "visionos",
+        "visionpro",
+        "vue"
+      ],
+      "strategies_matched": [
+        "Architecture Patterns"
+      ],
+      "relevance_score": "22.37",
+      "final_score": "26.37",
+      "url": "https://github.com/NativeScript/NativeScript"
+    },
+    {
+      "rank": 5,
+      "name": "DanielXMoore/Civet",
+      "stars": 1886,
+      "description": "A TypeScript superset that favors more types and less typing",
+      "language": "TypeScript",
+      "topics": [
+        "coffeescript",
+        "javascript",
+        "typescript"
+      ],
+      "strategies_matched": [
+        "Semantic"
+      ],
+      "relevance_score": "22.25",
+      "final_score": "26.25",
+      "url": "https://github.com/DanielXMoore/Civet"
+    },
+    {
+      "rank": 6,
+      "name": "storybookjs/storybook",
+      "stars": 87400,
+      "description": "Storybook is the industry standard workshop for building, documenting, and testing UI components in isolation",
+      "language": "TypeScript",
+      "topics": [
+        "angular",
+        "components",
+        "design-systems",
+        "documentation",
+        "html",
+        "javascript",
+        "react",
+        "react-native",
+        "stories",
+        "storybook",
+        "styleguide",
+        "svelte",
+        "testing",
+        "typescript",
+        "ui",
+        "vite",
+        "vue",
+        "web-components",
+        "webpack",
+        "workshop"
+      ],
+      "strategies_matched": [
+        "Architecture Patterns",
+        "License Compatibility"
+      ],
+      "relevance_score": "20.92",
+      "final_score": "25.92",
+      "url": "https://github.com/storybookjs/storybook"
+    },
+    {
+      "rank": 7,
+      "name": "microsoft/vscode",
+      "stars": 175254,
+      "description": "Visual Studio Code",
+      "language": "TypeScript",
+      "topics": [
+        "editor",
+        "electron",
+        "microsoft",
+        "typescript",
+        "visual-studio-code"
+      ],
+      "strategies_matched": [
+        "Activity",
+        "Community Patterns",
+        "Name Similarity",
+        "License Compatibility"
+      ],
+      "relevance_score": "17.78",
+      "final_score": "25.78",
+      "url": "https://github.com/microsoft/vscode"
+    },
+    {
+      "rank": 8,
+      "name": "nrwl/nx",
+      "stars": 26540,
+      "description": "An AI-first build platform that connects everything from your editor to CI. Helping you deliver fast, without breaking things.",
+      "language": "TypeScript",
+      "topics": [
+        "angular",
+        "build",
+        "build-system",
+        "build-tool",
+        "building-tool",
+        "cli",
+        "cypress",
+        "hacktoberfest",
+        "javascript",
+        "monorepo",
+        "nextjs",
+        "nodejs",
+        "nx",
+        "nx-workspaces",
+        "react",
+        "storybook",
+        "typescript"
+      ],
+      "strategies_matched": [
+        "Architecture Patterns"
+      ],
+      "relevance_score": "21.40",
+      "final_score": "25.40",
+      "url": "https://github.com/nrwl/nx"
+    },
+    {
+      "rank": 9,
+      "name": "yamadashy/repomix",
+      "stars": 18249,
+      "description": "📦 Repomix is a powerful tool that packs your entire repository into a single, AI-friendly file. Perfect for when you need to feed your codebase to Large Language Models (LLMs) or other AI tools like Claude, ChatGPT, DeepSeek, Perplexity, Gemini, Gemma, Llama, Grok, and more.",
+      "language": "TypeScript",
+      "topics": [
+        "ai",
+        "anthropic",
+        "artificial-intelligence",
+        "chatbot",
+        "chatgpt",
+        "claude",
+        "deepseek",
+        "developer-tools",
+        "gemini",
+        "genai",
+        "generative-ai",
+        "gpt",
+        "javascript",
+        "language-model",
+        "llama",
+        "llm",
+        "mcp",
+        "nodejs",
+        "openai",
+        "typescript"
+      ],
+      "strategies_matched": [
+        "Recent Trends"
+      ],
+      "relevance_score": "21.24",
+      "final_score": "24.24",
+      "url": "https://github.com/yamadashy/repomix"
+    },
+    {
+      "rank": 10,
+      "name": "vercel/ai",
+      "stars": 16254,
+      "description": "The AI Toolkit for TypeScript. From the creators of Next.js, the AI SDK is a free open-source library for building AI-powered applications and agents ",
+      "language": "TypeScript",
+      "topics": [
+        "anthropic",
+        "artificial-intelligence",
+        "gemini",
+        "generative-ai",
+        "generative-ui",
+        "javascript",
+        "language-model",
+        "llm",
+        "nextjs",
+        "openai",
+        "react",
+        "svelte",
+        "typescript",
+        "vercel",
+        "vue"
+      ],
+      "strategies_matched": [
+        "Recent Trends"
+      ],
+      "relevance_score": "21.19",
+      "final_score": "24.19",
+      "url": "https://github.com/vercel/ai"
+    }
+  ],
+  "search_strategies_available": [
+    "Language + Topics",
+    "Dependencies Analysis",
+    "Semantic Keywords",
+    "Activity Similarity",
+    "Architecture Patterns",
+    "Domain Discovery",
+    "Tech Stack Ecosystem",
+    "Community Patterns",
+    "Recent Trends",
+    "Name Similarity",
+    "License Compatibility",
+    "Scale Similarity"
+  ]
+}

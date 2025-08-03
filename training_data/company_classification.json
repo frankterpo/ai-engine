@@ -1,0 +1,49 @@
+[
+  {
+    "company_name": "vercel",
+    "company_description": "Develop. Preview. Ship. Creators of Next.js. Focus on TypeScript, React, NextJS frameworks and developer tools.",
+    "company_type": "Web Development",
+    "tech_stack": [
+      "TypeScript",
+      "React",
+      "NextJS",
+      "Svelte"
+    ],
+    "total_stars": 2494
+  },
+  {
+    "company_name": "facebook",
+    "company_description": "React library creators. Focus on JavaScript, declarative UI, frontend frameworks and social platform technology.",
+    "company_type": "Frontend Framework",
+    "tech_stack": [
+      "JavaScript",
+      "React",
+      "PHP",
+      "Python"
+    ],
+    "total_stars": 237813
+  },
+  {
+    "company_name": "microsoft",
+    "company_description": "TypeScript creators, Visual Studio Code, extensive developer tools and enterprise software solutions.",
+    "company_type": "Developer Tools",
+    "tech_stack": [
+      "TypeScript",
+      "C#",
+      "Python",
+      "JavaScript"
+    ],
+    "total_stars": 500000
+  },
+  {
+    "company_name": "openai",
+    "company_description": "Artificial intelligence research and deployment. Machine learning models, API services, and AI tools.",
+    "company_type": "AI/ML Company",
+    "tech_stack": [
+      "Python",
+      "JavaScript",
+      "AI Models"
+    ],
+    "total_stars": 100000
+  }
+]

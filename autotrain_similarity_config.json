@@ -1,0 +1,22 @@
+{
+  "username": "your-username",
+  "project_name": "company-similarity-embeddings-v1",
+  "task": "sentence_transformers",
+  "base_model": "sentence-transformers/all-mpnet-base-v2",
+  "hub_dataset": "your-username/github-companies-similarity-pairs",
+  "train_split": "train",
+  "hardware": "spaces-l40sx1",
+  "column_mapping": {
+    "sentence1_column": "company1_description",
+    "sentence2_column": "company2_description",
+    "target_column": "similarity_score"
+  },
+  "params": {
+    "epochs": 3,
+    "batch_size": 8,
+    "lr": 2e-05,
+    "max_seq_length": 512,
+    "mixed_precision": "fp16",
+    "trainer": "pair_score"
+  }
+}

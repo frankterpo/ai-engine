@@ -1,0 +1,292 @@
+{
+  "repository": {
+    "name": "microsoft/vscode",
+    "language": "TypeScript",
+    "stars": 175254,
+    "topics": [
+      "editor",
+      "electron",
+      "microsoft",
+      "typescript",
+      "visual-studio-code"
+    ],
+    "description": "Visual Studio Code"
+  },
+  "analysis": {
+    "total_similar_found": 20,
+    "search_duration_ms": 1188,
+    "strategies_used": 1,
+    "average_relevance_score": "24.57",
+    "version": "ultra-enhanced-v2.0"
+  },
+  "top_matches": [
+    {
+      "rank": 1,
+      "name": "RubisetCie/vscodius",
+      "stars": 12,
+      "description": "Binary releases of Visual Studio Code without MS branding/telemetry/licensing and various personal workflow improvements.",
+      "language": "TypeScript",
+      "topics": [
+        "editor",
+        "electron",
+        "microsoft",
+        "typescript",
+        "visual-studio-code"
+      ],
+      "strategies_matched": [
+        "Language+Topics"
+      ],
+      "relevance_score": "28.87",
+      "final_score": "33.87",
+      "url": "https://github.com/RubisetCie/vscodius"
+    },
+    {
+      "rank": 2,
+      "name": "versyxdigital/mkeditor",
+      "stars": 23,
+      "description": "MKEditor - the simple markdown editor.",
+      "language": "TypeScript",
+      "topics": [
+        "bootstrap",
+        "crowdstrike",
+        "editing",
+        "editor",
+        "electron",
+        "fontawesome",
+        "highlightjs",
+        "html",
+        "javascript",
+        "js",
+        "markdown",
+        "markdown-it",
+        "microsoft",
+        "monaco-editor",
+        "ts",
+        "typescript",
+        "vscode"
+      ],
+      "strategies_matched": [
+        "Language+Topics"
+      ],
+      "relevance_score": "23.14",
+      "final_score": "28.14",
+      "url": "https://github.com/versyxdigital/mkeditor"
+    },
+    {
+      "rank": 3,
+      "name": "angular/angular",
+      "stars": 98391,
+      "description": "Deliver web apps with confidence 🚀",
+      "language": "TypeScript",
+      "topics": [
+        "angular",
+        "javascript",
+        "pwa",
+        "typescript",
+        "web",
+        "web-framework",
+        "web-performance"
+      ],
+      "strategies_matched": [
+        "Activity",
+        "Architecture Patterns",
+        "Community Patterns",
+        "License Compatibility"
+      ],
+      "relevance_score": "17.75",
+      "final_score": "27.75",
+      "url": "https://github.com/angular/angular"
+    },
+    {
+      "rank": 4,
+      "name": "microsoft/azuredatastudio",
+      "stars": 7695,
+      "description": "Azure Data Studio is a data management and development tool with connectivity to popular cloud and on-premises databases. Azure Data Studio supports Windows, macOS, and Linux, with immediate capability to connect to Azure SQL and SQL Server. Browse the extension library for more database support options including MySQL, PostgreSQL, and MongoDB.",
+      "language": "TypeScript",
+      "topics": [
+        "azure",
+        "azure-data-studio",
+        "electron",
+        "microsoft",
+        "postgresql",
+        "sql",
+        "sql-server",
+        "typescript"
+      ],
+      "strategies_matched": [
+        "Name Similarity"
+      ],
+      "relevance_score": "24.64",
+      "final_score": "26.64",
+      "url": "https://github.com/microsoft/azuredatastudio"
+    },
+    {
+      "rank": 5,
+      "name": "Huachao/vscode-restclient",
+      "stars": 5674,
+      "description": "REST Client Extension for Visual Studio Code",
+      "language": "TypeScript",
+      "topics": [
+        "graphql",
+        "http",
+        "http-client",
+        "rest",
+        "rest-api",
+        "rest-client",
+        "typescript",
+        "visual-studio-code",
+        "vscode",
+        "vscode-extension"
+      ],
+      "strategies_matched": [
+        "Semantic"
+      ],
+      "relevance_score": "22.51",
+      "final_score": "26.51",
+      "url": "https://github.com/Huachao/vscode-restclient"
+    },
+    {
+      "rank": 6,
+      "name": "prettier/prettier-vscode",
+      "stars": 5323,
+      "description": "Visual Studio Code extension for Prettier",
+      "language": "TypeScript",
+      "topics": [
+        "formatter",
+        "typescript",
+        "visual-studio-code",
+        "visual-studio-code-extension"
+      ],
+      "strategies_matched": [
+        "Semantic"
+      ],
+      "relevance_score": "22.48",
+      "final_score": "26.48",
+      "url": "https://github.com/prettier/prettier-vscode"
+    },
+    {
+      "rank": 7,
+      "name": "n8n-io/n8n",
+      "stars": 126106,
+      "description": "Fair-code workflow automation platform with native AI capabilities. Combine visual building with custom code, self-host or cloud, 400+ integrations.",
+      "language": "TypeScript",
+      "topics": [
+        "ai",
+        "apis",
+        "automation",
+        "cli",
+        "data-flow",
+        "development",
+        "integration-framework",
+        "integrations",
+        "ipaas",
+        "low-code",
+        "low-code-platform",
+        "mcp",
+        "mcp-client",
+        "mcp-server",
+        "n8n",
+        "no-code",
+        "self-hosted",
+        "typescript",
+        "workflow",
+        "workflow-automation"
+      ],
+      "strategies_matched": [
+        "Activity",
+        "Community Patterns"
+      ],
+      "relevance_score": "20.86",
+      "final_score": "25.86",
+      "url": "https://github.com/n8n-io/n8n"
+    },
+    {
+      "rank": 8,
+      "name": "onlook-dev/onlook",
+      "stars": 21217,
+      "description": "The Cursor for Designers • An Open-Source Visual Vibecoding Editor • Visually build, style, and edit your React App with AI",
+      "language": "TypeScript",
+      "topics": [
+        "cursor",
+        "cursor-ai",
+        "design",
+        "design-to-code",
+        "drizzle",
+        "editor",
+        "figma",
+        "frontend",
+        "hacktoberfest",
+        "ide",
+        "low-code",
+        "nextjs",
+        "react",
+        "supabase",
+        "tailwindcss",
+        "typescript",
+        "ui",
+        "vibe-coding",
+        "webflow"
+      ],
+      "strategies_matched": [
+        "Recent Trends"
+      ],
+      "relevance_score": "21.08",
+      "final_score": "24.08",
+      "url": "https://github.com/onlook-dev/onlook"
+    },
+    {
+      "rank": 9,
+      "name": "VSCodeVim/Vim",
+      "stars": 14711,
+      "description": ":star: Vim for Visual Studio Code",
+      "language": "TypeScript",
+      "topics": [
+        "keybindings",
+        "typescript",
+        "vim",
+        "vscode",
+        "vscode-extension"
+      ],
+      "strategies_matched": [
+        "Semantic"
+      ],
+      "relevance_score": "19.92",
+      "final_score": "23.92",
+      "url": "https://github.com/VSCodeVim/Vim"
+    },
+    {
+      "rank": 10,
+      "name": "golang/vscode-go",
+      "stars": 4095,
+      "description": "Go extension for Visual Studio Code",
+      "language": "TypeScript",
+      "topics": [
+        "debugger",
+        "golang",
+        "visual-studio-code",
+        "vscode",
+        "vscode-extension"
+      ],
+      "strategies_matched": [
+        "Semantic"
+      ],
+      "relevance_score": "19.37",
+      "final_score": "23.37",
+      "url": "https://github.com/golang/vscode-go"
+    }
+  ],
+  "search_strategies_available": [
+    "Language + Topics",
+    "Dependencies Analysis",
+    "Semantic Keywords",
+    "Activity Similarity",
+    "Architecture Patterns",
+    "Domain Discovery",
+    "Tech Stack Ecosystem",
+    "Community Patterns",
+    "Recent Trends",
+    "Name Similarity",
+    "License Compatibility",
+    "Scale Similarity"
+  ]
+}

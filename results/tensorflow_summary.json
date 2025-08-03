@@ -1,0 +1,328 @@
+{
+  "repository": {
+    "name": "tensorflow/tensorflow",
+    "language": "C++",
+    "stars": 191008,
+    "topics": [
+      "deep-learning",
+      "deep-neural-networks",
+      "distributed",
+      "machine-learning",
+      "ml",
+      "neural-network",
+      "python",
+      "tensorflow"
+    ],
+    "description": "An Open Source Machine Learning Framework for Everyone"
+  },
+  "analysis": {
+    "total_similar_found": 20,
+    "search_duration_ms": 1948,
+    "strategies_used": 2,
+    "average_relevance_score": "30.62",
+    "version": "ultra-enhanced-v2.0"
+  },
+  "top_matches": [
+    {
+      "rank": 1,
+      "name": "tensorflow/serving",
+      "stars": 6312,
+      "description": "A flexible, high-performance serving system for machine learning models",
+      "language": "C++",
+      "topics": [
+        "cpp",
+        "deep-learning",
+        "deep-neural-networks",
+        "machine-learning",
+        "ml",
+        "neural-network",
+        "python",
+        "serving",
+        "tensorflow"
+      ],
+      "strategies_matched": [
+        "Tech Stack Ecosystem",
+        "Name Similarity"
+      ],
+      "relevance_score": "37.52",
+      "final_score": "43.52",
+      "url": "https://github.com/tensorflow/serving"
+    },
+    {
+      "rank": 2,
+      "name": "microsoft/CNTK",
+      "stars": 17590,
+      "description": "Microsoft Cognitive Toolkit (CNTK), an open source deep-learning toolkit",
+      "language": "C++",
+      "topics": [
+        "c-plus-plus",
+        "c-sharp",
+        "cntk",
+        "cognitive-toolkit",
+        "deep-learning",
+        "deep-neural-networks",
+        "distributed",
+        "java",
+        "machine-learning",
+        "neural-network",
+        "python"
+      ],
+      "strategies_matched": [
+        "Language+Topics"
+      ],
+      "relevance_score": "34.96",
+      "final_score": "39.96",
+      "url": "https://github.com/microsoft/CNTK"
+    },
+    {
+      "rank": 3,
+      "name": "Oneflow-Inc/oneflow",
+      "stars": 9361,
+      "description": "OneFlow is a deep learning framework designed to be user-friendly, scalable and efficient.",
+      "language": "C++",
+      "topics": [
+        "cuda",
+        "deep-learning",
+        "deep-neural-networks",
+        "distributed",
+        "machine-learning",
+        "ml",
+        "neural-network"
+      ],
+      "strategies_matched": [
+        "Language+Topics"
+      ],
+      "relevance_score": "33.69",
+      "final_score": "38.69",
+      "url": "https://github.com/Oneflow-Inc/oneflow"
+    },
+    {
+      "rank": 4,
+      "name": "nntile/nntile",
+      "stars": 54,
+      "description": "A neural network training framework within a task-based parallel programming paradigm",
+      "language": "C++",
+      "topics": [
+        "deep-learning",
+        "deep-neural-networks",
+        "distributed",
+        "machine-learning",
+        "ml",
+        "neural-network-tensorflow",
+        "python"
+      ],
+      "strategies_matched": [
+        "Language+Topics"
+      ],
+      "relevance_score": "30.46",
+      "final_score": "35.46",
+      "url": "https://github.com/nntile/nntile"
+    },
+    {
+      "rank": 5,
+      "name": "Tencent/TNN",
+      "stars": 4557,
+      "description": "TNN: developed by Tencent Youtu Lab and Guangying Lab, a uniform deep learning inference framework for mobile、desktop and server. TNN is distinguished by several outstanding features, including its cross-platform capability, high performance, model compression and code pruning. Based on ncnn and Rapidnet, TNN further strengthens the support and performance optimization for mobile devices, and also draws on the advantages of good extensibility and high performance from existed open source efforts. TNN has been deployed in multiple Apps from Tencent, such as Mobile QQ, Weishi, Pitu, etc. Contributions are welcome to work in collaborative with us and make TNN a better framework. ",
+      "language": "C++",
+      "topics": [
+        "coreml",
+        "deep-learning",
+        "face-detection",
+        "hairsegmentaion",
+        "inference",
+        "mnn",
+        "ncnn",
+        "ocr",
+        "openvino",
+        "pytorch",
+        "tengine",
+        "tensorflow",
+        "tensorrt"
+      ],
+      "strategies_matched": [
+        "Tech Stack Ecosystem",
+        "Name Similarity"
+      ],
+      "relevance_score": "26.38",
+      "final_score": "32.38",
+      "url": "https://github.com/Tencent/TNN"
+    },
+    {
+      "rank": 6,
+      "name": "NVIDIA/DALI",
+      "stars": 5477,
+      "description": "A GPU-accelerated library containing highly optimized building blocks and an execution engine for data processing to accelerate deep learning training and inference applications.",
+      "language": "C++",
+      "topics": [
+        "audio-processing",
+        "data-augmentation",
+        "data-processing",
+        "deep-learning",
+        "fast-data-pipeline",
+        "gpu",
+        "gpu-tensorflow",
+        "image-augmentation",
+        "image-processing",
+        "machine-learning",
+        "mxnet",
+        "neural-network",
+        "paddle",
+        "python",
+        "pytorch"
+      ],
+      "strategies_matched": [
+        "Tech Stack Ecosystem"
+      ],
+      "relevance_score": "27.46",
+      "final_score": "31.46",
+      "url": "https://github.com/NVIDIA/DALI"
+    },
+    {
+      "rank": 7,
+      "name": "mozilla/DeepSpeech",
+      "stars": 26544,
+      "description": "DeepSpeech is an open source embedded (offline, on-device) speech-to-text engine which can run in real time on devices ranging from a Raspberry Pi 4 to high power GPU servers.",
+      "language": "C++",
+      "topics": [
+        "deep-learning",
+        "deepspeech",
+        "embedded",
+        "machine-learning",
+        "neural-networks",
+        "offline",
+        "on-device",
+        "speech-recognition",
+        "speech-to-text",
+        "tensorflow"
+      ],
+      "strategies_matched": [
+        "Tech Stack Ecosystem",
+        "Name Similarity"
+      ],
+      "relevance_score": "25.14",
+      "final_score": "31.14",
+      "url": "https://github.com/mozilla/DeepSpeech"
+    },
+    {
+      "rank": 8,
+      "name": "Tencent/ncnn",
+      "stars": 21855,
+      "description": "ncnn is a high-performance neural network inference framework optimized for the mobile platform",
+      "language": "C++",
+      "topics": [
+        "android",
+        "arm-neon",
+        "artificial-intelligence",
+        "caffe",
+        "darknet",
+        "deep-learning",
+        "high-preformance",
+        "inference",
+        "ios",
+        "keras",
+        "mlir",
+        "mxnet",
+        "ncnn",
+        "neural-network",
+        "onnx",
+        "pytorch",
+        "riscv",
+        "simd",
+        "tensorflow",
+        "vulkan"
+      ],
+      "strategies_matched": [
+        "Tech Stack Ecosystem",
+        "Name Similarity"
+      ],
+      "relevance_score": "25.06",
+      "final_score": "31.06",
+      "url": "https://github.com/Tencent/ncnn"
+    },
+    {
+      "rank": 9,
+      "name": "microsoft/nni",
+      "stars": 14243,
+      "description": "An open source AutoML toolkit for automate machine learning lifecycle, including feature engineering, neural architecture search, model compression and hyper-parameter tuning.",
+      "language": "Python",
+      "topics": [
+        "automated-machine-learning",
+        "automl",
+        "bayesian-optimization",
+        "data-science",
+        "deep-learning",
+        "deep-neural-network",
+        "distributed",
+        "feature-engineering",
+        "hyperparameter-optimization",
+        "hyperparameter-tuning",
+        "machine-learning",
+        "machine-learning-algorithms",
+        "mlops",
+        "model-compression",
+        "nas",
+        "neural-architecture-search",
+        "neural-network",
+        "python",
+        "pytorch",
+        "tensorflow"
+      ],
+      "strategies_matched": [
+        "Semantic"
+      ],
+      "relevance_score": "26.87",
+      "final_score": "30.87",
+      "url": "https://github.com/microsoft/nni"
+    },
+    {
+      "rank": 10,
+      "name": "isl-org/Open3D",
+      "stars": 12615,
+      "description": "Open3D: A Modern Library for 3D Data Processing",
+      "language": "C++",
+      "topics": [
+        "3d",
+        "3d-perception",
+        "arm",
+        "computer-graphics",
+        "cpp",
+        "cuda",
+        "gpu",
+        "gui",
+        "machine-learning",
+        "mesh-processing",
+        "odometry",
+        "opengl",
+        "pointcloud",
+        "python",
+        "pytorch",
+        "reconstruction",
+        "registration",
+        "rendering",
+        "tensorflow",
+        "visualization"
+      ],
+      "strategies_matched": [
+        "Tech Stack Ecosystem",
+        "Name Similarity"
+      ],
+      "relevance_score": "23.82",
+      "final_score": "29.82",
+      "url": "https://github.com/isl-org/Open3D"
+    }
+  ],
+  "search_strategies_available": [
+    "Language + Topics",
+    "Dependencies Analysis",
+    "Semantic Keywords",
+    "Activity Similarity",
+    "Architecture Patterns",
+    "Domain Discovery",
+    "Tech Stack Ecosystem",
+    "Community Patterns",
+    "Recent Trends",
+    "Name Similarity",
+    "License Compatibility",
+    "Scale Similarity"
+  ]
+}

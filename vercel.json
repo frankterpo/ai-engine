@@ -1,0 +1,27 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "api-server.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/analyze",
+      "dest": "/api-server.js"
+    },
+    {
+      "src": "/health",
+      "dest": "/api-server.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/public/$1"
+    }
+  ],
+  "env": {
+    "GITHUB_TOKEN": "@github_token",
+    "HUGGINGFACE_API_KEY": "@huggingface_api_key"
+  }
+} 
