@@ -50,38 +50,60 @@ function parseRepoUrl(repoUrl) {
     return { owner: match[1], repo: match[2] };
 }
 
-// Main API endpoint
+// POST /analyze endpoint with enhanced progress tracking
 app.post('/analyze', async (req, res) => {
     const startTime = Date.now();
+    console.log(`📊 [API] New analysis request started at ${new Date().toISOString()}`);
     
     try {
         const { repoUrl } = req.body;
+        
         if (!repoUrl) {
-            return res.status(400).json({ error: 'repoUrl is required' });
+            return res.status(400).json({
+                success: false,
+                error: 'Repository URL is required',
+                message: 'Please provide a valid GitHub repository URL'
+            });
         }
-
-        console.log(`🚀 [API] Analyzing repository: ${repoUrl}`);
         
-        // Step 1: Parse repo URL
+        // Validate GitHub URL format
+        if (!repoUrl.includes('github.com')) {
+            return res.status(400).json({
+                success: false,
+                error: 'Invalid GitHub URL',
+                message: 'Please provide a valid GitHub repository URL (e.g., https://github.com/owner/repo)'
+            });
+        }
+        
+        // Extract owner and repo from URL
         const { owner, repo } = parseRepoUrl(repoUrl);
+        console.log(`🔍 [API] Analyzing: ${owner}/${repo}`);
         
-        // Step 2: Get repository details
-        console.log(`📋 [API] Fetching repository details...`);
+        // Step 1: Get repository information
+        console.log(`📡 [API] Fetching repository data...`);
         const repoResponse = await githubClient.get(`/repos/${owner}/${repo}`);
         const repoData = repoResponse.data;
         
-        // Step 3: Get contributors
+        // Step 2: Get contributors
         console.log(`👥 [API] Fetching contributors...`);
-        const contributorsResponse = await githubClient.get(`/repos/${owner}/${repo}/contributors`);
-        const contributors = contributorsResponse.data.slice(0, 10); // Top 10 contributors
+        const contributorsResponse = await githubClient.get(`/repos/${owner}/${repo}/contributors`, {
+            params: { per_page: 10 }
+        });
+        const contributors = contributorsResponse.data;
         
-        // Step 4: Get company profile (owner's repos)
-        console.log(`🏢 [API] Fetching company profile...`);
-        const ownerReposResponse = await githubClient.get(`/users/${owner}/repos?sort=stars&per_page=20`);
+        // Step 3: Get owner's other repositories
+        console.log(`🏢 [API] Fetching organization repositories...`);
+        const ownerReposResponse = await githubClient.get(`/users/${owner}/repos`, {
+            params: { 
+                per_page: 20,
+                sort: 'stars',
+                direction: 'desc'
+            }
+        });
         const ownerRepos = ownerReposResponse.data;
         
-        // Step 5: Enhanced AI Analysis with Company Discovery
-        console.log(`🤖 [API] Running enhanced AI analysis with company discovery...`);
+        // Step 4: Enhanced AI Analysis with Real-time Progress
+        console.log(`🤖 [API] Starting enhanced AI analysis with progress tracking...`);
         
         const repoAnalysisData = {
             name: repoData.name,
@@ -93,31 +115,50 @@ app.post('/analyze', async (req, res) => {
             owner: owner
         };
         
+        // Progress tracking for real-time updates
+        const progressUpdates = [];
+        const onProgress = (update) => {
+            progressUpdates.push({
+                ...update,
+                timestamp: Date.now()
+            });
+            console.log(`📊 [PROGRESS] ${update.step}: ${update.message}`);
+        };
+        
         // AI-powered company classification
         const companyType = await fastAI.classifyCompany(
             `${repoData.description} ${repoData.language} ${repoData.topics?.join(' ')}`
         );
         
-        // Dynamic company discovery using AI and GitHub Search
-        console.log(`🔍 [API] Discovering similar companies dynamically...`);
+        // Enhanced dynamic company discovery with progress tracking
+        console.log(`🔍 [API] Discovering similar companies with AI...`);
         const discoveredSimilarCompanies = await fastAI.discoverSimilarCompanies(
             repoAnalysisData, 
-            githubClient
+            githubClient,
+            onProgress
         );
         
         // Enhanced contributor analysis across similar repositories
-        console.log(`👥 [API] Analyzing contributors across similar repositories...`);
+        console.log(`👥 [API] Analyzing high-throughput contributors...`);
         const similarRepoData = discoveredSimilarCompanies.slice(0, 3).map(company => ({
             owner: company.name,
             name: company.sample_repo.name,
-            language: company.sample_repo.language
+            language: company.sample_repo.language,
+            full_name: `${company.name}/${company.sample_repo.name}`
         }));
         
         const crossRepoContributors = await fastAI.analyzeSimilarContributors(
             repoAnalysisData,
             similarRepoData,
-            githubClient
+            githubClient,
+            onProgress
         );
+        
+        onProgress({ 
+            step: 'finalizing', 
+            message: 'Finalizing analysis results...', 
+            progress: 98 
+        });
         
         // Enhanced company profile with AI insights
         const enhancedCompanyProfile = {
@@ -134,10 +175,10 @@ app.post('/analyze', async (req, res) => {
                 stars: repo.stargazers_count
             })),
             ai_classification: companyType,
-            discovery_method: 'AI-Enhanced Analysis'
+            discovery_method: 'Enhanced AI Analysis'
         };
         
-        // Build comprehensive response
+        // Build comprehensive response with progress tracking
         const response = {
             success: true,
             analyzed_repository: {
@@ -158,6 +199,8 @@ app.post('/analyze', async (req, res) => {
                 similarity_score: company.similarity_score,
                 sample_repository: company.sample_repo,
                 reasoning: company.reasoning,
+                detailed_reasoning: company.detailed_reasoning,
+                confidence_score: company.confidence_score,
                 discovery_method: 'AI-Powered GitHub Search'
             })),
             cross_repo_contributors: crossRepoContributors.map(contributor => ({
@@ -178,17 +221,19 @@ app.post('/analyze', async (req, res) => {
                 avatar: c.avatar_url,
                 profile: c.html_url
             })),
+            progress_log: progressUpdates,
             metadata: {
                 processing_time_ms: Date.now() - startTime,
                 ai_powered: true,
                 analysis_date: new Date().toISOString(),
-                discovery_methods: ['AI Classification', 'Semantic Search', 'GitHub API', 'Cross-Repository Analysis'],
+                discovery_methods: ['Enhanced AI Classification', 'Semantic Search', 'GitHub API', 'Cross-Repository Analysis', 'Throughput Assessment'],
                 total_companies_discovered: discoveredSimilarCompanies.length,
-                cross_repo_contributors_analyzed: crossRepoContributors.length
+                cross_repo_contributors_analyzed: crossRepoContributors.length,
+                progress_steps: progressUpdates.length
             }
         };
         
-        console.log(`✅ [API] Enhanced analysis completed in ${Date.now() - startTime}ms`);
+        console.log(`✅ [API] Enhanced analysis completed in ${Date.now() - startTime}ms with ${progressUpdates.length} progress updates`);
         res.json(response);
         
     } catch (error) {

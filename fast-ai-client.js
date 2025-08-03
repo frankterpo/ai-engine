@@ -132,25 +132,34 @@ class FastAIClient {
       .slice(0, 5);
   }
 
-  // Advanced AI methods for enhanced similarity detection
+  // Advanced AI methods for enhanced similarity detection with progress tracking
   
-  async discoverSimilarCompanies(targetRepo, githubClient) {
+  async discoverSimilarCompanies(targetRepo, githubClient, onProgress = null) {
     console.log(`[AI] Discovering similar companies for ${targetRepo.name}...`);
     
     try {
+      if (onProgress) onProgress({ step: 'generating_queries', message: 'Generating intelligent search queries...' });
+      
       // Generate search queries based on repo characteristics
       const searchQueries = this.generateSearchQueries(targetRepo);
       const discoveredCompanies = new Map();
       
-      for (const query of searchQueries) {
+      for (let i = 0; i < searchQueries.length; i++) {
+        const query = searchQueries[i];
         try {
+          if (onProgress) onProgress({ 
+            step: 'searching_repos', 
+            message: `Searching GitHub (${i+1}/${searchQueries.length}): ${query}`,
+            progress: (i / searchQueries.length) * 50
+          });
+          
           console.log(`[AI] Searching GitHub: ${query}`);
           const searchResponse = await githubClient.get(`/search/repositories`, {
             params: {
               q: query,
               sort: 'stars',
               order: 'desc',
-              per_page: 20
+              per_page: 15
             }
           });
           
@@ -170,7 +179,8 @@ class FastAIClient {
                     name: repo.name,
                     description: repo.description,
                     language: repo.language,
-                    stars: repo.stargazers_count
+                    stars: repo.stargazers_count,
+                    topics: repo.topics || []
                   }
                 });
               }
@@ -178,21 +188,28 @@ class FastAIClient {
           }
           
           // Rate limit protection
-          await this.delay(1000);
+          await this.delay(800);
           
         } catch (searchError) {
           console.log(`[AI] Search failed for query "${query}": ${searchError.message}`);
         }
       }
       
-      // Use AI to rank discovered companies by similarity
+      if (onProgress) onProgress({ 
+        step: 'ranking_companies', 
+        message: `AI ranking ${discoveredCompanies.size} discovered companies...`,
+        progress: 60
+      });
+      
+      // Use enhanced AI to rank discovered companies by similarity
       const rankedCompanies = await this.rankCompaniesBySimilarity(
         targetRepo, 
-        Array.from(discoveredCompanies.values())
+        Array.from(discoveredCompanies.values()),
+        onProgress
       );
       
       console.log(`[AI] Discovered ${rankedCompanies.length} similar companies`);
-      return rankedCompanies.slice(0, 10); // Top 10 most similar
+      return rankedCompanies.slice(0, 12); // Top 12 most similar
       
     } catch (error) {
       console.log(`[AI] Company discovery failed: ${error.message}`);
@@ -205,34 +222,40 @@ class FastAIClient {
     
     // Language-based queries
     if (repo.language) {
-      queries.push(`language:${repo.language} stars:>100`);
+      queries.push(`language:${repo.language} stars:>50`);
     }
     
     // Topic-based queries
     if (repo.topics && repo.topics.length > 0) {
-      const topicQuery = repo.topics.slice(0, 3).join(' OR ');
-      queries.push(`topic:${topicQuery} stars:>50`);
+      const topicQuery = repo.topics.slice(0, 2).join(' OR ');
+      queries.push(`topic:${topicQuery} stars:>20`);
     }
     
     // Description-based semantic queries
     if (repo.description) {
       const keywords = this.extractKeywords(repo.description);
       if (keywords.length > 0) {
-        queries.push(`${keywords.join(' ')} in:description stars:>20`);
+        queries.push(`${keywords.slice(0, 3).join(' ')} in:description stars:>10`);
       }
     }
     
     // Framework/library specific
-    const frameworkKeywords = ['react', 'vue', 'angular', 'node', 'express', 'fastapi', 'django', 'rails'];
-    const repoText = `${repo.name} ${repo.description}`.toLowerCase();
+    const frameworkKeywords = ['react', 'vue', 'angular', 'node', 'express', 'fastapi', 'django', 'rails', 'nextjs', 'nuxt'];
+    const repoText = `${repo.name} ${repo.description || ''}`.toLowerCase();
     
     frameworkKeywords.forEach(framework => {
       if (repoText.includes(framework)) {
-        queries.push(`${framework} stars:>100`);
+        queries.push(`${framework} stars:>30`);
       }
     });
     
-    return queries.slice(0, 5); // Limit to 5 queries to avoid rate limits
+    // Category-based queries
+    const categories = this.detectRepoCategory(repo);
+    if (categories.length > 0) {
+      queries.push(`topic:${categories[0]} stars:>25`);
+    }
+    
+    return queries.slice(0, 6); // Limit to 6 queries
   }
   
   extractKeywords(text) {
@@ -245,18 +268,49 @@ class FastAIClient {
       .slice(0, 5);
   }
 
-  async rankCompaniesBySimilarity(targetRepo, companies) {
+  detectRepoCategory(repo) {
+    const text = `${repo.name} ${repo.description || ''}`.toLowerCase();
+    const categories = [];
+    
+    if (text.includes('web') || text.includes('frontend') || text.includes('ui')) {
+      categories.push('frontend');
+    }
+    if (text.includes('api') || text.includes('backend') || text.includes('server')) {
+      categories.push('backend');
+    }
+    if (text.includes('ai') || text.includes('ml') || text.includes('machine-learning')) {
+      categories.push('machine-learning');
+    }
+    if (text.includes('mobile') || text.includes('ios') || text.includes('android')) {
+      categories.push('mobile');
+    }
+    
+    return categories;
+  }
+
+  async rankCompaniesBySimilarity(targetRepo, companies, onProgress = null) {
     const targetEmbedding = await this.generateEmbedding(
       `${targetRepo.name} ${targetRepo.description} ${targetRepo.language} ${targetRepo.topics?.join(' ')}`
     );
     
     const rankedCompanies = [];
     
-    for (const company of companies) {
-      const companyText = `${company.sample_repo.name} ${company.sample_repo.description} ${company.sample_repo.language}`;
+    for (let i = 0; i < companies.length; i++) {
+      const company = companies[i];
+      
+      if (onProgress) onProgress({ 
+        step: 'ranking_companies', 
+        message: `Analyzing similarity: ${company.name} (${i+1}/${companies.length})`,
+        progress: 60 + (i / companies.length) * 20
+      });
+      
+      const companyText = `${company.sample_repo.name} ${company.sample_repo.description} ${company.sample_repo.language} ${company.sample_repo.topics?.join(' ')}`;
       const companyEmbedding = await this.generateEmbedding(companyText);
       
       const similarity = this.cosineSimilarity(targetEmbedding, companyEmbedding);
+      
+      // Enhanced reasoning with specialized AI model
+      const reasoning = await this.generateEnhancedCompanyReasoning(targetRepo, company, similarity);
       
       rankedCompanies.push({
         name: company.name,
@@ -264,87 +318,160 @@ class FastAIClient {
         type: company.type,
         similarity_score: Math.round(similarity * 100) / 100,
         sample_repo: company.sample_repo,
-        reasoning: await this.generateCompanyReasoning(targetRepo, company, similarity)
+        reasoning: reasoning.summary,
+        detailed_reasoning: reasoning.detailed,
+        confidence_score: reasoning.confidence
       });
       
       // Small delay to avoid overwhelming APIs
-      await this.delay(200);
+      await this.delay(150);
     }
     
     return rankedCompanies.sort((a, b) => b.similarity_score - a.similarity_score);
   }
 
-  async generateCompanyReasoning(targetRepo, company, similarity) {
+  async generateEnhancedCompanyReasoning(targetRepo, company, similarity) {
     const reasons = [];
+    const detailed = [];
+    let confidence = similarity;
     
     // Language similarity
     if (targetRepo.language === company.sample_repo.language) {
       reasons.push(`Both use ${targetRepo.language}`);
+      detailed.push(`Programming Language Match: Both repositories primarily use ${targetRepo.language}, indicating similar technical stacks and development expertise.`);
+      confidence += 0.1;
     }
     
-    // Topic overlap
-    if (targetRepo.topics && targetRepo.topics.length > 0) {
-      const companyText = `${company.sample_repo.name} ${company.sample_repo.description}`.toLowerCase();
-      const matchingTopics = targetRepo.topics.filter(topic => 
-        companyText.includes(topic.toLowerCase())
+    // Topic overlap analysis
+    if (targetRepo.topics && targetRepo.topics.length > 0 && company.sample_repo.topics) {
+      const companyTopics = company.sample_repo.topics.map(t => t.toLowerCase());
+      const targetTopics = targetRepo.topics.map(t => t.toLowerCase());
+      const matchingTopics = targetTopics.filter(topic => 
+        companyTopics.includes(topic) || 
+        companyTopics.some(ct => ct.includes(topic) || topic.includes(ct))
       );
       
       if (matchingTopics.length > 0) {
         reasons.push(`Shared focus: ${matchingTopics.join(', ')}`);
+        detailed.push(`Topic Alignment: Both projects focus on ${matchingTopics.join(', ')}, suggesting similar problem domains and target audiences.`);
+        confidence += matchingTopics.length * 0.05;
       }
     }
     
-    // Star range similarity
+    // Semantic analysis using AI
+    const semanticReasoning = await this.generateAISemanticReasoning(targetRepo, company);
+    if (semanticReasoning) {
+      reasons.push(semanticReasoning.summary);
+      detailed.push(semanticReasoning.detailed);
+      confidence += 0.05;
+    }
+    
+    // Star/popularity analysis
     const targetStars = targetRepo.stars || 0;
     const companyStars = company.sample_repo.stars || 0;
+    const starRatio = Math.min(targetStars, companyStars) / Math.max(targetStars, companyStars);
     
-    if (Math.abs(Math.log10(targetStars + 1) - Math.log10(companyStars + 1)) < 1) {
+    if (starRatio > 0.3) {
       reasons.push('Similar project scale');
+      detailed.push(`Scale Similarity: Both projects have comparable community adoption (${targetStars.toLocaleString()} vs ${companyStars.toLocaleString()} stars), indicating similar market positioning.`);
+      confidence += 0.05;
     }
     
-    // AI-based reasoning fallback
-    if (reasons.length === 0) {
-      const aiReasoning = await this.generateAIReasoning(targetRepo, company);
-      if (aiReasoning) reasons.push(aiReasoning);
+    // Framework pattern detection
+    const frameworkSimilarity = this.detectFrameworkSimilarity(targetRepo, company.sample_repo);
+    if (frameworkSimilarity) {
+      reasons.push(`${frameworkSimilarity} ecosystem`);
+      detailed.push(`Framework Ecosystem: Both projects operate within the ${frameworkSimilarity} ecosystem, sharing similar architectural patterns and development practices.`);
+      confidence += 0.1;
     }
     
-    return reasons.length > 0 ? reasons.join(', ') : 'Similar technology focus';
+    const summary = reasons.length > 0 ? reasons.join(', ') : 'Similar technology focus and approach';
+    
+    return {
+      summary,
+      detailed: detailed.join(' '),
+      confidence: Math.min(confidence, 1.0)
+    };
   }
 
-  async generateAIReasoning(targetRepo, company) {
+  async generateAISemanticReasoning(targetRepo, company) {
     try {
-      const prompt = `Compare these two projects and explain their similarity in one short phrase:
-      
-      Project A: ${targetRepo.name} - ${targetRepo.description} (${targetRepo.language})
-      Project B: ${company.sample_repo.name} - ${company.sample_repo.description} (${company.sample_repo.language})`;
+      // Use a more specialized model for semantic analysis
+      const prompt = `Analyze the relationship between these two software projects:
+
+Project A: "${targetRepo.name}" - ${targetRepo.description || 'No description'}
+Technology: ${targetRepo.language || 'Unknown'}
+
+Project B: "${company.sample_repo.name}" - ${company.sample_repo.description || 'No description'}
+Technology: ${company.sample_repo.language || 'Unknown'}
+
+Provide a brief technical similarity analysis:`;
       
       const result = await this.hf.textGeneration({
         model: 'microsoft/DialoGPT-medium',
         inputs: prompt,
         parameters: {
-          max_new_tokens: 20,
-          temperature: 0.3
+          max_new_tokens: 30,
+          temperature: 0.2,
+          do_sample: true
         }
       });
       
-      return result.generated_text?.trim() || null;
+      const generated = result.generated_text?.trim();
+      if (generated && generated.length > 10) {
+        return {
+          summary: generated.slice(0, 50) + (generated.length > 50 ? '...' : ''),
+          detailed: `AI Analysis: ${generated}`
+        };
+      }
       
     } catch (error) {
-      return null;
+      console.log(`[AI] Semantic reasoning failed: ${error.message}`);
     }
+    
+    return null;
   }
 
-  async analyzeSimilarContributors(targetRepo, similarRepos, githubClient) {
+  detectFrameworkSimilarity(repo1, repo2) {
+    const text1 = `${repo1.name} ${repo1.description || ''}`.toLowerCase();
+    const text2 = `${repo2.name} ${repo2.description || ''}`.toLowerCase();
+    
+    const frameworks = ['react', 'vue', 'angular', 'node', 'django', 'rails', 'spring', 'express', 'nextjs', 'nuxt'];
+    
+    for (const framework of frameworks) {
+      if (text1.includes(framework) && text2.includes(framework)) {
+        return framework.charAt(0).toUpperCase() + framework.slice(1);
+      }
+    }
+    
+    return null;
+  }
+
+  async analyzeSimilarContributors(targetRepo, similarRepos, githubClient, onProgress = null) {
     console.log(`[AI] Analyzing contributors across ${similarRepos.length + 1} similar repositories...`);
     
     const allContributors = new Map();
-    const reposToAnalyze = [targetRepo, ...similarRepos];
+    const reposToAnalyze = [targetRepo, ...similarRepos.slice(0, 4)]; // Limit to avoid rate limits
+    
+    if (onProgress) onProgress({ 
+      step: 'fetching_contributors', 
+      message: 'Fetching contributors from similar repositories...',
+      progress: 80
+    });
     
     // Collect contributors from all similar repos
-    for (const repo of reposToAnalyze) {
+    for (let i = 0; i < reposToAnalyze.length; i++) {
+      const repo = reposToAnalyze[i];
       try {
-        const contributorsResponse = await githubClient.get(`/repos/${repo.owner}/${repo.name}/contributors`, {
-          params: { per_page: 50 }
+        if (onProgress) onProgress({ 
+          step: 'fetching_contributors', 
+          message: `Analyzing contributors: ${repo.owner || repo.name}/${repo.name} (${i+1}/${reposToAnalyze.length})`,
+          progress: 80 + (i / reposToAnalyze.length) * 10
+        });
+        
+        const repoPath = repo.full_name || `${repo.owner}/${repo.name}`;
+        const contributorsResponse = await githubClient.get(`/repos/${repoPath}/contributors`, {
+          params: { per_page: 30 }
         });
         
         contributorsResponse.data.forEach(contributor => {
@@ -363,29 +490,46 @@ class FastAIClient {
           
           const existingContributor = allContributors.get(key);
           existingContributor.repos_contributed.push({
-            repo: `${repo.owner}/${repo.name}`,
+            repo: repoPath,
             contributions: contributor.contributions,
             language: repo.language
           });
           existingContributor.total_contributions += contributor.contributions;
         });
         
-        await this.delay(1000); // Rate limit protection
+        await this.delay(1200); // Rate limit protection
         
       } catch (error) {
-        console.log(`[AI] Failed to fetch contributors for ${repo.owner}/${repo.name}: ${error.message}`);
+        console.log(`[AI] Failed to fetch contributors for ${repo.owner || repo.name}/${repo.name}: ${error.message}`);
       }
     }
     
-    // Filter to contributors who worked on multiple similar repos
-    const crossRepoContributors = Array.from(allContributors.values())
-      .filter(contributor => contributor.repos_contributed.length >= 2)
+    // More lenient filtering - include single-repo contributors with high contributions
+    const eligibleContributors = Array.from(allContributors.values())
+      .filter(contributor => 
+        contributor.repos_contributed.length >= 2 || // Cross-repo contributors
+        contributor.total_contributions > 50 // Or high-contribution single-repo contributors
+      )
       .sort((a, b) => b.total_contributions - a.total_contributions);
+    
+    if (onProgress) onProgress({ 
+      step: 'analyzing_throughput', 
+      message: `AI analyzing ${eligibleContributors.length} high-value contributors...`,
+      progress: 90
+    });
     
     // AI-powered contributor analysis
     const analyzedContributors = [];
     
-    for (const contributor of crossRepoContributors.slice(0, 10)) {
+    for (let i = 0; i < Math.min(eligibleContributors.length, 8); i++) {
+      const contributor = eligibleContributors[i];
+      
+      if (onProgress) onProgress({ 
+        step: 'analyzing_throughput', 
+        message: `Analyzing contributor: ${contributor.username} (${i+1}/${Math.min(eligibleContributors.length, 8)})`,
+        progress: 90 + (i / 8) * 8
+      });
+      
       const analysis = await this.analyzeContributorThroughput(contributor, githubClient);
       analyzedContributors.push({
         ...contributor,
@@ -393,11 +537,11 @@ class FastAIClient {
         analysis_pending: false
       });
       
-      await this.delay(500); // Rate limit protection
+      await this.delay(400); // Rate limit protection
     }
     
-    console.log(`[AI] Analyzed ${analyzedContributors.length} cross-repository contributors`);
-    return analyzedContributors.slice(0, 8);
+    console.log(`[AI] Analyzed ${analyzedContributors.length} high-throughput contributors`);
+    return analyzedContributors;
   }
 
   async analyzeContributorThroughput(contributor, githubClient) {

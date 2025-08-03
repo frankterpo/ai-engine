@@ -284,17 +284,18 @@ describe('🌐 API Server Integration Tests', () => {
         .timeout(5000);
 
       expect(response.status).toBe(400);
-      expect(response.body).toHaveProperty('error', 'repoUrl is required');
+      expect(response.body).toHaveProperty('error', 'Repository URL is required');
     });
 
     test('should validate GitHub URL format', async () => {
       const response = await request(app)
         .post('/analyze')
-        .send({ repoUrl: 'invalid-url' })
+        .send({ repoUrl: 'https://invalid-url.com/repo' })
         .timeout(5000);
 
-      expect(response.status).toBe(500);
+      expect(response.status).toBe(400);
       expect(response.body).toHaveProperty('success', false);
+      expect(response.body).toHaveProperty('error', 'Invalid GitHub URL');
     });
   });
 });

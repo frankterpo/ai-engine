@@ -3,9 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🚀 AI Repository Scout</title>
+    <title>AI Repository Scout - Enhanced Analysis</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <style>
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .animate-pulse-slow {
+            animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { background-position: -200px 0; }
+            100% { background-position: calc(200px + 100%) 0; }
+        }
+        
+        .shimmer {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200px 100%;
+            animation: shimmer 2s infinite;
+        }
+    </style>
 </head>
 <body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen">
     <div class="container mx-auto px-4 py-8">
@@ -20,38 +43,125 @@
         </div>
 
         <!-- Main App -->
-        <div x-data="repositoryScout()" class="max-w-4xl mx-auto">
-            <!-- Input Form -->
-            <div class="bg-white rounded-2xl shadow-xl p-8 mb-8">
-                <form @submit.prevent="analyzeRepository" class="space-y-6">
-                    <div>
-                        <label for="repoUrl" class="block text-sm font-medium text-gray-700 mb-2">
-                            GitHub Repository URL
-                        </label>
-                        <div class="relative">
-                            <input 
-                                type="url" 
-                                id="repoUrl"
-                                x-model="repoUrl"
-                                placeholder="https://github.com/facebook/react"
-                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg"
-                                required
-                            >
-                            <div class="absolute inset-y-0 right-0 flex items-center pr-3">
-                                <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
-                                </svg>
-                            </div>
-                        </div>
-                    </div>
+        <div x-data="{
+            repoUrl: '',
+            loading: false,
+            results: null,
+            error: null,
+            progressStatus: '',
+            progressPercent: 0,
+            progressStep: '',
+            showDetailedReasoning: {},
+            
+            async analyzeRepo() {
+                if (!this.repoUrl.trim()) {
+                    this.error = 'Please enter a GitHub repository URL';
+                    return;
+                }
+                
+                this.loading = true;
+                this.error = null;
+                this.results = null;
+                this.progressStatus = 'Starting analysis...';
+                this.progressPercent = 0;
+                this.progressStep = 'initializing';
+                
+                try {
+                    const response = await fetch('/analyze', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ repoUrl: this.repoUrl })
+                    });
                     
-                    <button 
-                        type="submit" 
-                        :disabled="loading"
-                        class="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-semibold py-4 px-6 rounded-lg transition duration-200 text-lg"
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        this.results = data;
+                        this.progressStatus = 'Analysis complete!';
+                        this.progressPercent = 100;
+                        
+                        // Simulate progress updates for better UX
+                        this.showProgressUpdates(data.progress_log || []);
+                    } else {
+                        this.error = data.error || 'Analysis failed';
+                        this.progressStatus = 'Analysis failed';
+                    }
+                } catch (err) {
+                    this.error = 'Failed to analyze repository: ' + err.message;
+                    this.progressStatus = 'Error occurred';
+                } finally {
+                    this.loading = false;
+                }
+            },
+            
+            showProgressUpdates(progressLog) {
+                // Display progress updates if available
+                if (progressLog && progressLog.length > 0) {
+                    let delay = 0;
+                    progressLog.forEach((update, index) => {
+                        setTimeout(() => {
+                            this.progressStep = update.step;
+                            this.progressStatus = update.message;
+                            this.progressPercent = update.progress || ((index + 1) / progressLog.length) * 100;
+                        }, delay);
+                        delay += 300; // 300ms between updates
+                    });
+                }
+            },
+            
+            toggleDetailedReasoning(companyName) {
+                this.showDetailedReasoning[companyName] = !this.showDetailedReasoning[companyName];
+            },
+            
+            getProgressColor() {
+                if (this.progressStep === 'finalizing') return 'bg-green-500';
+                if (this.progressStep === 'analyzing_throughput') return 'bg-purple-500';
+                if (this.progressStep === 'ranking_companies') return 'bg-blue-500';
+                if (this.progressStep === 'searching_repos') return 'bg-yellow-500';
+                return 'bg-indigo-500';
+            },
+            
+            getProgressIcon() {
+                switch(this.progressStep) {
+                    case 'generating_queries': return '🧠';
+                    case 'searching_repos': return '🔍';
+                    case 'ranking_companies': return '📊';
+                    case 'fetching_contributors': return '👥';
+                    case 'analyzing_throughput': return '🚀';
+                    case 'finalizing': return '✅';
+                    default: return '⚡';
+                }
+            }
+        }" class="max-w-6xl mx-auto p-8">
+            <div class="text-center mb-12">
+                <h1 class="text-5xl font-bold text-gray-800 mb-4">
+                    🤖 AI Repository Scout
+                    <span class="text-sm bg-purple-100 text-purple-800 px-2 py-1 rounded-full ml-2">v2.0 ENHANCED</span>
+                </h1>
+                <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                    Discover similar companies and high-throughput contributors using advanced AI analysis
+                </p>
+            </div>
+
+            <!-- Input Section -->
+            <div class="bg-white rounded-2xl shadow-xl p-8 mb-8">
+                <div class="flex flex-col md:flex-row gap-4">
+                    <input 
+                        x-model="repoUrl"
+                        type="text" 
+                        placeholder="https://github.com/facebook/react"
+                        class="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        @keyup.enter="analyzeRepo()"
                     >
-                        <span x-show="!loading">🔍 Analyze Repository</span>
-                        <span x-show="loading" class="flex items-center justify-center">
+                    <button 
+                        @click="analyzeRepo()"
+                        :disabled="loading"
+                        class="px-8 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-semibold hover:from-blue-700 hover:to-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                    >
+                        <span x-show="!loading">🚀 Analyze with AI</span>
+                        <span x-show="loading" class="flex items-center">
                             <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
@@ -59,15 +169,63 @@
                             Analyzing...
                         </span>
                     </button>
-                </form>
+                </div>
+            </div>
+
+            <!-- Enhanced Loading Progress -->
+            <div x-show="loading" class="bg-white rounded-2xl shadow-xl p-8 mb-8">
+                <div class="text-center mb-6">
+                    <div class="text-4xl mb-4" x-text="getProgressIcon()"></div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">AI Analysis in Progress</h3>
+                    <p class="text-gray-600" x-text="progressStatus"></p>
+                </div>
+                
+                <div class="w-full bg-gray-200 rounded-full h-3 mb-4">
+                    <div 
+                        class="h-3 rounded-full transition-all duration-500 ease-out"
+                        :class="getProgressColor()"
+                        :style="`width: ${progressPercent}%`"
+                    ></div>
+                </div>
+                
+                <div class="flex justify-center">
+                    <span class="text-sm font-medium text-gray-700" x-text="`${Math.round(progressPercent)}% Complete`"></span>
+                </div>
+                
+                <div class="mt-6 grid grid-cols-2 md:grid-cols-6 gap-4 text-center text-xs">
+                    <div :class="progressStep === 'generating_queries' ? 'text-blue-600 font-semibold' : 'text-gray-400'">
+                        🧠 Query Gen
+                    </div>
+                    <div :class="progressStep === 'searching_repos' ? 'text-yellow-600 font-semibold' : 'text-gray-400'">
+                        🔍 Searching
+                    </div>
+                    <div :class="progressStep === 'ranking_companies' ? 'text-blue-600 font-semibold' : 'text-gray-400'">
+                        📊 Ranking
+                    </div>
+                    <div :class="progressStep === 'fetching_contributors' ? 'text-green-600 font-semibold' : 'text-gray-400'">
+                        👥 Contributors
+                    </div>
+                    <div :class="progressStep === 'analyzing_throughput' ? 'text-purple-600 font-semibold' : 'text-gray-400'">
+                        🚀 AI Analysis
+                    </div>
+                    <div :class="progressStep === 'finalizing' ? 'text-green-600 font-semibold' : 'text-gray-400'">
+                        ✅ Complete
+                    </div>
+                </div>
             </div>
 
             <!-- Error Message -->
-            <div x-show="error" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-8">
-                <strong>Error:</strong> <span x-text="error"></span>
+            <div x-show="error" class="bg-red-50 border border-red-200 rounded-lg p-4 mb-8">
+                <div class="flex">
+                    <div class="text-red-400 text-xl mr-3">❌</div>
+                    <div>
+                        <h3 class="text-red-800 font-semibold">Analysis Failed</h3>
+                        <p class="text-red-600" x-text="error"></p>
+                    </div>
+                </div>
             </div>
 
-            <!-- Results -->
+            <!-- Results Section -->
             <div x-show="results" class="space-y-8">
                 <!-- Repository Info -->
                 <div class="bg-white rounded-2xl shadow-xl p-8">
@@ -129,35 +287,107 @@
                     <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
                         🔍 AI-Discovered Similar Companies
                         <span class="ml-2 text-sm bg-purple-100 text-purple-800 px-2 py-1 rounded-full">ENHANCED</span>
+                        <span class="ml-2 text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full" x-text="`${results?.discovered_similar_companies?.length || 0} found`"></span>
                     </h2>
-                    <div class="space-y-4">
+                    <div class="space-y-6">
                         <template x-for="company in results?.discovered_similar_companies || []">
-                            <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                            <div class="border border-gray-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300">
                                 <div class="flex items-start gap-4">
-                                    <img :src="company.avatar" :alt="company.name" class="w-12 h-12 rounded-full">
+                                    <img :src="company.avatar" :alt="company.name" class="w-16 h-16 rounded-full shadow-md">
                                     <div class="flex-1">
-                                        <div class="flex justify-between items-start mb-2">
+                                        <div class="flex justify-between items-start mb-3">
                                             <div>
-                                                <h3 class="font-semibold text-lg" x-text="company.name"></h3>
-                                                <span class="text-xs text-gray-500" x-text="company.type"></span>
+                                                <h3 class="font-bold text-xl text-gray-800" x-text="company.name"></h3>
+                                                <div class="flex items-center gap-2 mt-1">
+                                                    <span class="text-sm text-gray-500" x-text="company.type"></span>
+                                                    <span class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full" x-text="company.discovery_method"></span>
+                                                </div>
                                             </div>
-                                            <span class="bg-blue-100 text-blue-800 text-sm px-2 py-1 rounded-full" 
-                                                  x-text="Math.round(company.similarity_score * 100) + '%'"></span>
-                                        </div>
-                                        <div class="mb-2">
-                                            <p class="text-sm text-gray-700"><strong>Sample Repo:</strong> <span x-text="company.sample_repository?.name"></span></p>
-                                            <p class="text-xs text-gray-600" x-text="company.sample_repository?.description"></p>
-                                            <div class="flex items-center gap-2 mt-1">
-                                                <span class="text-xs bg-gray-100 px-2 py-1 rounded" x-text="company.sample_repository?.language"></span>
-                                                <span class="text-xs text-gray-500">⭐ <span x-text="company.sample_repository?.stars?.toLocaleString()"></span></span>
+                                            <div class="text-right">
+                                                <div class="text-2xl font-bold" 
+                                                     :class="company.similarity_score > 0.7 ? 'text-green-600' : company.similarity_score > 0.5 ? 'text-blue-600' : company.similarity_score > 0.3 ? 'text-yellow-600' : 'text-gray-600'"
+                                                     x-text="Math.round(company.similarity_score * 100) + '%'"></div>
+                                                <div class="text-xs text-gray-500">Similarity</div>
+                                                <div class="text-xs text-purple-600 font-medium" x-text="`${Math.round((company.confidence_score || 0.5) * 100)}% confidence`"></div>
                                             </div>
                                         </div>
-                                        <p class="text-gray-600 text-sm"><strong>Why Similar:</strong> <span x-text="company.reasoning"></span></p>
-                                        <span class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full" x-text="company.discovery_method"></span>
+                                        
+                                        <!-- Sample Repository with Collapsible Description -->
+                                        <div class="bg-gray-50 rounded-lg p-4 mb-4">
+                                            <div class="flex justify-between items-start mb-2">
+                                                <div>
+                                                    <h4 class="font-semibold text-gray-800">📁 Sample Repository</h4>
+                                                    <p class="text-lg font-medium text-blue-600" x-text="company.sample_repository?.name"></p>
+                                                </div>
+                                                <div class="flex items-center gap-2">
+                                                    <span class="text-sm bg-blue-100 text-blue-800 px-2 py-1 rounded" x-text="company.sample_repository?.language || 'N/A'"></span>
+                                                    <span class="text-sm text-gray-600">⭐ <span x-text="company.sample_repository?.stars?.toLocaleString() || '0'"></span></span>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Collapsible Description -->
+                                            <div x-data="{ expanded: false }" class="mt-2">
+                                                <div class="text-sm text-gray-600" 
+                                                     :class="expanded ? '' : 'line-clamp-2'">
+                                                    <p x-text="company.sample_repository?.description || 'No description available'"></p>
+                                                </div>
+                                                <button 
+                                                    @click="expanded = !expanded"
+                                                    x-show="(company.sample_repository?.description || '').length > 100"
+                                                    class="text-blue-600 hover:text-blue-800 text-sm font-medium mt-1"
+                                                    x-text="expanded ? 'Show less ↑' : 'Show more ↓'"
+                                                ></button>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Enhanced Reasoning -->
+                                        <div class="border-t pt-4">
+                                            <div class="mb-2">
+                                                <h4 class="font-semibold text-gray-800 mb-2">🧠 AI Similarity Analysis</h4>
+                                                <p class="text-gray-700 text-sm" x-text="company.reasoning"></p>
+                                            </div>
+                                            
+                                            <!-- Detailed Reasoning (Expandable) -->
+                                            <div x-show="company.detailed_reasoning" class="mt-3">
+                                                <button 
+                                                    @click="toggleDetailedReasoning(company.name)"
+                                                    class="flex items-center gap-2 text-blue-600 hover:text-blue-800 text-sm font-medium"
+                                                >
+                                                    <span x-text="showDetailedReasoning[company.name] ? 'Hide detailed analysis' : 'Show detailed analysis'"></span>
+                                                    <svg 
+                                                        class="w-4 h-4 transition-transform duration-200" 
+                                                        :class="showDetailedReasoning[company.name] ? 'rotate-180' : ''"
+                                                        fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                                    >
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                                    </svg>
+                                                </button>
+                                                
+                                                <div 
+                                                    x-show="showDetailedReasoning[company.name]"
+                                                    x-transition:enter="transition ease-out duration-300"
+                                                    x-transition:enter-start="opacity-0 transform scale-95"
+                                                    x-transition:enter-end="opacity-100 transform scale-100"
+                                                    x-transition:leave="transition ease-in duration-200"
+                                                    x-transition:leave-start="opacity-100 transform scale-100"
+                                                    x-transition:leave-end="opacity-0 transform scale-95"
+                                                    class="mt-3 p-4 bg-blue-50 rounded-lg border border-blue-200"
+                                                >
+                                                    <h5 class="font-medium text-blue-800 mb-2">Detailed Technical Analysis</h5>
+                                                    <p class="text-blue-700 text-sm" x-text="company.detailed_reasoning"></p>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </template>
+                        
+                        <!-- No results message -->
+                        <div x-show="results?.discovered_similar_companies?.length === 0" class="text-center py-8 text-gray-500">
+                            <div class="text-4xl mb-2">🔍</div>
+                            <p>No similar companies discovered. Try a different repository.</p>
+                        </div>
                     </div>
                 </div>
 
@@ -166,27 +396,30 @@
                     <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
                         🚀 High-Throughput Contributors
                         <span class="ml-2 text-sm bg-purple-100 text-purple-800 px-2 py-1 rounded-full">AI-SCORED</span>
+                        <span class="ml-2 text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full" x-text="`${results?.cross_repo_contributors?.length || 0} analyzed`"></span>
                     </h2>
-                    <div class="grid sm:grid-cols-1 lg:grid-cols-2 gap-4">
+                    
+                    <!-- Contributors Grid -->
+                    <div x-show="results?.cross_repo_contributors?.length > 0" class="grid sm:grid-cols-1 lg:grid-cols-2 gap-6">
                         <template x-for="contributor in results?.cross_repo_contributors || []">
-                            <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
-                                <div class="flex items-start gap-3">
-                                    <img :src="contributor.avatar" :alt="contributor.username" class="w-10 h-10 rounded-full">
+                            <div class="border border-gray-200 rounded-xl p-5 hover:shadow-lg transition-all duration-300">
+                                <div class="flex items-start gap-4">
+                                    <img :src="contributor.avatar" :alt="contributor.username" class="w-12 h-12 rounded-full shadow-md">
                                     <div class="flex-1 min-w-0">
-                                        <div class="flex justify-between items-start mb-2">
+                                        <div class="flex justify-between items-start mb-3">
                                             <div>
-                                                <h3 class="font-semibold text-base" x-text="contributor.username"></h3>
-                                                <span class="text-xs text-gray-500" x-text="contributor.specialization"></span>
+                                                <h3 class="font-bold text-lg text-gray-800" x-text="contributor.username"></h3>
+                                                <span class="text-sm text-gray-600" x-text="contributor.specialization"></span>
                                             </div>
                                             <div class="text-right">
-                                                <div class="text-lg font-bold" 
+                                                <div class="text-xl font-bold" 
                                                      :class="contributor.throughput_score > 80 ? 'text-green-600' : contributor.throughput_score > 60 ? 'text-blue-600' : contributor.throughput_score > 40 ? 'text-yellow-600' : 'text-gray-600'"
                                                      x-text="contributor.throughput_score"></div>
                                                 <div class="text-xs text-gray-500">Throughput</div>
                                             </div>
                                         </div>
                                         
-                                        <div class="mb-2">
+                                        <div class="mb-3">
                                             <span class="text-xs px-2 py-1 rounded-full"
                                                   :class="contributor.activity_level === 'Very High' ? 'bg-green-100 text-green-800' : 
                                                           contributor.activity_level === 'High' ? 'bg-blue-100 text-blue-800' : 
@@ -194,25 +427,63 @@
                                                   x-text="contributor.activity_level + ' Activity'"></span>
                                         </div>
                                         
-                                        <p class="text-xs text-gray-600 mb-2" x-text="contributor.assessment"></p>
+                                        <p class="text-sm text-gray-700 mb-3" x-text="contributor.assessment"></p>
                                         
-                                        <div class="text-xs text-gray-500">
-                                            <div class="flex justify-between">
-                                                <span>Repos: <span x-text="contributor.repositories_contributed?.length"></span></span>
-                                                <span>Contributions: <span x-text="contributor.total_contributions"></span></span>
+                                        <!-- Repository Contributions -->
+                                        <div class="mb-3">
+                                            <h4 class="text-xs font-semibold text-gray-600 mb-1">REPOSITORIES CONTRIBUTED TO:</h4>
+                                            <div class="space-y-1">
+                                                <template x-for="repo in contributor.repositories_contributed?.slice(0, 3) || []">
+                                                    <div class="flex justify-between items-center text-xs">
+                                                        <span class="text-blue-600 font-medium" x-text="repo.repo"></span>
+                                                        <span class="text-gray-500" x-text="repo.contributions + ' commits'"></span>
+                                                    </div>
+                                                </template>
+                                                <div x-show="contributor.repositories_contributed?.length > 3" class="text-xs text-gray-400">
+                                                    <span x-text="`+${contributor.repositories_contributed.length - 3} more repositories`"></span>
+                                                </div>
                                             </div>
-                                            <div class="flex justify-between mt-1">
-                                                <span>Followers: <span x-text="contributor.metrics?.followers"></span></span>
-                                                <span>Public Repos: <span x-text="contributor.metrics?.repos_count"></span></span>
+                                        </div>
+                                        
+                                        <!-- Metrics -->
+                                        <div class="text-xs text-gray-500 border-t pt-2">
+                                            <div class="grid grid-cols-2 gap-2">
+                                                <div>
+                                                    <span class="font-medium">Followers:</span> <span x-text="contributor.metrics?.followers || 'N/A'"></span>
+                                                </div>
+                                                <div>
+                                                    <span class="font-medium">Public Repos:</span> <span x-text="contributor.metrics?.repos_count || 'N/A'"></span>
+                                                </div>
+                                                <div>
+                                                    <span class="font-medium">Total Contributions:</span> <span x-text="contributor.total_contributions"></span>
+                                                </div>
+                                                <div>
+                                                    <span class="font-medium">Languages:</span> <span x-text="contributor.metrics?.languages_used?.length || 0"></span>
+                                                </div>
                                             </div>
                                         </div>
                                         
                                         <a :href="contributor.profile" target="_blank" 
-                                           class="inline-block mt-2 text-blue-600 hover:text-blue-800 text-xs">View Profile →</a>
+                                           class="inline-block mt-3 text-blue-600 hover:text-blue-800 text-sm font-medium">
+                                           View GitHub Profile →
+                                        </a>
                                     </div>
                                 </div>
                             </div>
                         </template>
+                    </div>
+                    
+                    <!-- Empty State -->
+                    <div x-show="!results?.cross_repo_contributors || results?.cross_repo_contributors?.length === 0" class="text-center py-12">
+                        <div class="text-5xl mb-4">👥</div>
+                        <h3 class="text-xl font-semibold text-gray-700 mb-2">No Cross-Repository Contributors Found</h3>
+                        <p class="text-gray-500 max-w-md mx-auto">
+                            This repository might not have contributors who work across multiple similar projects, 
+                            or the analysis criteria didn't find qualifying matches.
+                        </p>
+                        <div class="mt-4 text-sm text-gray-400">
+                            <p>💡 Tip: Larger, more popular repositories typically have more cross-project contributors</p>
+                        </div>
                     </div>
                 </div>
 
@@ -256,61 +527,5 @@
             </div>
         </div>
     </div>
-
-    <script>
-        function repositoryScout() {
-            return {
-                repoUrl: '',
-                loading: false,
-                results: null,
-                error: null,
-
-                async analyzeRepository() {
-                    if (!this.repoUrl) return;
-
-                    this.loading = true;
-                    this.error = null;
-                    this.results = null;
-
-                    try {
-                        const response = await fetch('/analyze', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify({
-                                repoUrl: this.repoUrl
-                            })
-                        });
-
-                        const data = await response.json();
-
-                        if (data.success) {
-                            this.results = data;
-                        } else {
-                            this.error = data.message || data.error || 'Analysis failed';
-                        }
-                    } catch (err) {
-                        this.error = 'Failed to connect to the analysis service. Please try again.';
-                        console.error('Analysis error:', err);
-                    } finally {
-                        this.loading = false;
-                    }
-                }
-            }
-        }
-
-        // Example URLs for quick testing
-        document.addEventListener('DOMContentLoaded', () => {
-            const examples = [
-                'https://github.com/facebook/react',
-                'https://github.com/microsoft/vscode',
-                'https://github.com/vercel/next.js'
-            ];
-            
-            // Add example buttons (optional)
-            console.log('Example URLs:', examples);
-        });
-    </script>
 </body>
 </html> 
