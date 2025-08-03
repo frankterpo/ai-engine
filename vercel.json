@@ -19,9 +19,5 @@
       "src": "/(.*)",
       "dest": "/public/$1"
     }
-  ],
-  "env": {
-    "GITHUB_TOKEN": "@github_token",
-    "HUGGINGFACE_API_KEY": "@huggingface_api_key"
-  }
+  ]
 } 
