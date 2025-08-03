@@ -18,18 +18,30 @@ app.use(express.json());
 app.use(express.static('public')); // Serve static files
 
 // Configuration
-const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
+const GITHUB_TOKEN = process.env.GITHUB_TOKEN?.trim(); // Remove any whitespace
 const fastAI = new FastAIClient();
+
+// Validate GitHub token
+if (!GITHUB_TOKEN) {
+    console.error('❌ GITHUB_TOKEN environment variable is not set');
+} else {
+    console.log('✅ GitHub token loaded:', GITHUB_TOKEN.substring(0, 12) + '...');
+    console.log('✅ Token length:', GITHUB_TOKEN.length);
+}
 
 // GitHub API client
 const githubClient = axios.create({
     baseURL: 'https://api.github.com',
     headers: {
         'Authorization': `token ${GITHUB_TOKEN}`,
-        'User-Agent': 'RepoSimilarityScout'
+        'User-Agent': 'RepoSimilarityScout',
+        'Accept': 'application/vnd.github.v3+json'
     },
     timeout: 10000
 });
+
+// Debug the authorization header
+console.log('🔍 Authorization header:', `token ${GITHUB_TOKEN?.substring(0, 12)}...`);
 
 // Helper to extract owner/repo from URL
 function parseRepoUrl(repoUrl) {
@@ -158,9 +170,25 @@ app.post('/analyze', async (req, res) => {
         
     } catch (error) {
         console.error(`❌ [API] Error:`, error.message);
+        console.error(`❌ [API] Error details:`, {
+            status: error.response?.status,
+            statusText: error.response?.statusText,
+            data: error.response?.data,
+            headers: error.response?.headers
+        });
+        
+        const errorMessage = error.response?.status === 401 
+            ? 'GitHub authentication failed - invalid token'
+            : error.response?.status === 404
+            ? 'Repository not found'
+            : error.response?.status === 403
+            ? 'GitHub API rate limit exceeded'
+            : error.message;
+            
         res.status(500).json({
             success: false,
-            error: error.message,
+            error: errorMessage,
+            status_code: error.response?.status,
             message: 'Failed to analyze repository'
         });
     }
