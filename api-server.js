@@ -8,6 +8,7 @@ const cors = require('cors');
 const axios = require('axios');
 const { FastAIClient } = require('./fast-ai-client.js');
 require('dotenv').config();
+const path = require('path'); // Added for serving static files
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -178,20 +179,26 @@ app.get('/health', (req, res) => {
     });
 });
 
-// Root endpoint with usage
+// Root endpoint - serve HTML UI for browsers, JSON for API clients
 app.get('/', (req, res) => {
-    res.json({
-        service: '🚀 AI Repository Analysis API',
-        description: 'Analyze GitHub repositories and find similar companies using AI',
-        usage: {
-            endpoint: 'POST /analyze',
-            body: {
-                repoUrl: 'https://github.com/facebook/react'
-            }
-        },
-        example: `curl -X POST ${req.protocol}://${req.get('host')}/analyze -H "Content-Type: application/json" -d '{"repoUrl": "https://github.com/facebook/react"}'`,
-        health: `${req.protocol}://${req.get('host')}/health`
-    });
+    // Check if request accepts HTML (from browser)
+    if (req.headers.accept && req.headers.accept.includes('text/html')) {
+        res.sendFile(path.join(__dirname, 'public', 'index.html'));
+    } else {
+        // Return JSON for API clients
+        res.json({
+            service: '🚀 AI Repository Analysis API',
+            description: 'Analyze GitHub repositories and find similar companies using AI',
+            usage: {
+                endpoint: 'POST /analyze',
+                body: {
+                    repoUrl: 'https://github.com/facebook/react'
+                }
+            },
+            example: `curl -X POST ${req.protocol}://${req.get('host')}/analyze -H "Content-Type: application/json" -d '{"repoUrl": "https://github.com/facebook/react"}'`,
+            health: `${req.protocol}://${req.get('host')}/health`
+        });
+    }
 });
 
 app.listen(port, () => {

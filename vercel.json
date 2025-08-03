@@ -17,8 +17,12 @@
       "dest": "/api-server.js"
     },
     {
-      "src": "/(.*)",
+      "src": "/public/(.*)",
       "dest": "/public/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/api-server.js"
     }
   ]
 } 
