@@ -3,12 +3,26 @@
 // 🚀 Fast AI Client - Uses Existing HF Models (No Training Required)
 // Ready in 5 minutes instead of 2 hours!
 
-const { HfInference } = require('@huggingface/inference');
+const { HfInference } = require('@huggingface/inference');  
+const axios = require('axios');
 require('dotenv').config();
 
 class FastAIClient {
   constructor() {
-    this.hf = new HfInference(process.env.HUGGINGFACE_API_KEY);
+    this.hfApiKey = process.env.HUGGINGFACE_API_KEY || process.env.HUGGINGFACE_WRITE_KEY;
+    this.hf = new HfInference(this.hfApiKey);
+    
+    // Create axios client for direct HF API calls
+    this.hfClient = axios.create({
+      baseURL: 'https://api-inference.huggingface.co',
+      headers: {
+        'Authorization': `Bearer ${this.hfApiKey}`,
+        'Content-Type': 'application/json'
+      },
+      timeout: 30000
+    });
+    
+    console.log(`🤖 FastAI initialized with HF key: ${this.hfApiKey ? this.hfApiKey.substring(0, 8) + '...' : 'MISSING'}`);
     
     // Pre-trained models - ready to use immediately
     this.models = {
@@ -22,7 +36,7 @@ class FastAIClient {
     console.log(`[AI] Classifying company with HuggingFace...`);
     
     try {
-      // Use zero-shot classification with a better model
+      // Method 1: Try HuggingFace inference client
       const result = await this.hf.zeroShotClassification({
         model: "facebook/bart-large-mnli",
         inputs: companyDescription,
@@ -44,8 +58,24 @@ class FastAIClient {
       return result.labels[0]; // Return the top classification
       
     } catch (error) {
-      console.log(`[AI] HF Classification failed, using fallback: ${error.message}`);
-      return this.ruleBasedClassification(companyDescription);
+      console.log(`[AI] HF Client failed, trying direct API: ${error.message}`);
+      
+      try {
+        // Method 2: Direct API call
+        const response = await this.hfClient.post('/models/facebook/bart-large-mnli', {
+          inputs: companyDescription,
+          parameters: {
+            candidate_labels: ["Web Development", "AI/ML Company", "Developer Tools", "Backend/Infrastructure"]
+          }
+        });
+        
+        console.log(`[AI] Direct HF API successful: ${response.data.labels[0]}`);
+        return response.data.labels[0];
+        
+      } catch (directError) {
+        console.log(`[AI] Direct API also failed, using fallback: ${directError.message}`);
+        return this.ruleBasedClassification(companyDescription);
+      }
     }
   }
 
@@ -53,6 +83,7 @@ class FastAIClient {
     console.log(`[AI] Generating HuggingFace embedding for text length: ${text.length}`);
     
     try {
+      // Method 1: Try HuggingFace inference client
       const result = await this.hf.featureExtraction({
         model: "sentence-transformers/all-MiniLM-L6-v2",
         inputs: text.substring(0, 512) // Limit text length
@@ -62,8 +93,22 @@ class FastAIClient {
       return Array.isArray(result[0]) ? result[0] : (Array.isArray(result) ? result : []);
       
     } catch (error) {
-      console.log(`[AI] HF Embedding failed, using fallback: ${error.message}`);
-      return this.fastHashEmbedding(text);
+      console.log(`[AI] HF Client failed, trying direct API: ${error.message}`);
+      
+      try {
+        // Method 2: Direct API call
+        const response = await this.hfClient.post('/models/sentence-transformers/all-MiniLM-L6-v2', {
+          inputs: text.substring(0, 512)
+        });
+        
+        const embedding = response.data;
+        console.log(`[AI] Direct HF API embedding successful, dimensions: ${Array.isArray(embedding) ? embedding.length : 'unknown'}`);
+        return Array.isArray(embedding[0]) ? embedding[0] : (Array.isArray(embedding) ? embedding : []);
+        
+      } catch (directError) {
+        console.log(`[AI] Direct API also failed, using fallback: ${directError.message}`);
+        return this.fastHashEmbedding(text);
+      }
     }
   }
 
