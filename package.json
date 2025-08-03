@@ -2,13 +2,15 @@
   "name": "ai-enhanced-repo-similarity-scout",
   "version": "2.0.0",
   "description": "AI-powered GitHub repository similarity scout using Cohere and Hugging Face",
-  "main": "ai-ultra-server.js",
+  "main": "api-server.js",
   "scripts": {
     "start": "node api-server.js",
     "dev": "node api-server.js",
     "build": "echo 'Build complete'",
     "company": "node company-profile-server.js",
-    "test": "node test-and-save.js",
+    "test": "jest --detectOpenHandles --forceExit",
+    "test:watch": "jest --watch --detectOpenHandles",
+    "test:coverage": "jest --coverage --detectOpenHandles --forceExit",
     "contributors": "node enhanced-with-contributors.js",
     "database": "node database-cached-scout.js",
     "populate": "node scripts/batch-populate-database.js",
@@ -17,13 +19,35 @@
     "setup-db": "psql $DATABASE_URL -f database/schema.sql"
   },
   "dependencies": {
-    "@huggingface/inference": "^2.8.1",
+    "@huggingface/inference": "^2.6.4",
     "axios": "^1.6.0",
-    "cohere-ai": "^7.18.0",
+    "cohere-ai": "^7.0.0",
     "cors": "^2.8.5",
-    "dotenv": "^16.3.1",
+    "dotenv": "^16.6.1",
     "express": "^4.18.2",
     "pg": "^8.11.0"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "supertest": "^6.3.4"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "testTimeout": 10000,
+    "setupFilesAfterEnv": ["<rootDir>/jest.setup.js"],
+    "collectCoverageFrom": [
+      "*.js",
+      "!node_modules/**",
+      "!test-*.js",
+      "!enhanced-*.js",
+      "!ai-ultra-server.js",
+      "!ai-enhanced-scout.js",
+      "!jest.setup.js"
+    ],
+    "modulePathIgnorePatterns": [
+      "<rootDir>/node_modules/"
+    ],
+    "verbose": true
   },
   "keywords": [
     "github",

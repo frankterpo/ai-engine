@@ -229,23 +229,26 @@ app.get('/', (req, res) => {
     }
 });
 
-app.listen(port, () => {
-    console.log(`🎉 ===============================================`);
-    console.log(`🚀 AI REPOSITORY ANALYSIS API READY!`);
-    console.log(`🎉 ===============================================`);
-    console.log(`📡 Server: http://localhost:${port}`);
-    console.log(`🔍 Analyze: POST http://localhost:${port}/analyze`);
-    console.log(`❤️  Health: GET http://localhost:${port}/health`);
-    console.log(`🤖 AI Features:`);
-    console.log(`   • HuggingFace Classification: ✅`);
-    console.log(`   • Semantic Similarity: ✅`);
-    console.log(`   • Company Analysis: ✅`);
-    console.log(`   • Contributor Analysis: ✅`);
-    console.log(`📝 Example:`);
-    console.log(`curl -X POST http://localhost:${port}/analyze \\`);
-    console.log(`  -H "Content-Type: application/json" \\`);
-    console.log(`  -d '{"repoUrl": "https://github.com/facebook/react"}'`);
-    console.log(`🚀 READY FOR UI INTEGRATION!`);
-});
+// Only start server if not in test environment
+if (process.env.NODE_ENV !== 'test') {
+    app.listen(port, () => {
+        console.log(`🎉 ===============================================`);
+        console.log(`🚀 AI REPOSITORY ANALYSIS API READY!`);
+        console.log(`🎉 ===============================================`);
+        console.log(`📡 Server: http://localhost:${port}`);
+        console.log(`🔍 Analyze: POST http://localhost:${port}/analyze`);
+        console.log(`❤️  Health: GET http://localhost:${port}/health`);
+        console.log(`🤖 AI Features:`);
+        console.log(`   • HuggingFace Classification: ✅`);
+        console.log(`   • Semantic Similarity: ✅`);
+        console.log(`   • Company Analysis: ✅`);
+        console.log(`   • Contributor Analysis: ✅`);
+        console.log(`📝 Example:`);
+        console.log(`curl -X POST http://localhost:${port}/analyze \\`);
+        console.log(`  -H "Content-Type: application/json" \\`);
+        console.log(`  -d '{"repoUrl": "https://github.com/facebook/react"}'`);
+        console.log(`🚀 READY FOR UI INTEGRATION!`);
+    });
+}
 
 module.exports = app; 
