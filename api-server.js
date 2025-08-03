@@ -144,15 +144,26 @@ app.post('/analyze', async (req, res) => {
             owner: company.name,
             name: company.sample_repo.name,
             language: company.sample_repo.language,
-            full_name: `${company.name}/${company.sample_repo.name}`
+            full_name: `${company.name}/${company.sample_repo.name}`,
+            stars: company.sample_repo.stars || 0
         }));
         
-        const crossRepoContributors = await fastAI.analyzeSimilarContributors(
-            repoAnalysisData,
-            similarRepoData,
-            githubClient,
-            onProgress
-        );
+        console.log(`👥 [API] Analyzing contributors across these repositories:`, similarRepoData.map(r => r.full_name));
+        
+        let crossRepoContributors = [];
+        try {
+            crossRepoContributors = await fastAI.analyzeSimilarContributors(
+                repoAnalysisData,
+                similarRepoData,
+                githubClient,
+                onProgress
+            );
+            console.log(`👥 [API] Successfully found ${crossRepoContributors.length} cross-repo contributors`);
+        } catch (contributorError) {
+            console.error(`❌ [API] Contributor analysis failed:`, contributorError.message);
+            // Continue with empty array instead of failing the entire request
+            crossRepoContributors = [];
+        }
         
         onProgress({ 
             step: 'finalizing', 

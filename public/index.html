@@ -7,13 +7,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
     <style>
-        .line-clamp-2 {
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-        
         .animate-pulse-slow {
             animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
         }
@@ -27,6 +20,21 @@
             background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
             background-size: 200px 100%;
             animation: shimmer 2s infinite;
+        }
+        
+        /* Better text overflow handling */
+        .text-truncate {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        .max-h-0 {
+            max-height: 0;
+        }
+        
+        .max-h-96 {
+            max-height: 24rem;
         }
     </style>
 </head>
@@ -290,7 +298,7 @@
                         <span class="ml-2 text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full" x-text="`${results?.discovered_similar_companies?.length || 0} found`"></span>
                     </h2>
                     <div class="space-y-6">
-                        <template x-for="company in results?.discovered_similar_companies || []">
+                        <template x-for="(company, index) in results?.discovered_similar_companies || []" :key="company.name">
                             <div class="border border-gray-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300">
                                 <div class="flex items-start gap-4">
                                     <img :src="company.avatar" :alt="company.name" class="w-16 h-16 rounded-full shadow-md">
@@ -325,18 +333,40 @@
                                                 </div>
                                             </div>
                                             
-                                            <!-- Collapsible Description -->
-                                            <div x-data="{ expanded: false }" class="mt-2">
-                                                <div class="text-sm text-gray-600" 
-                                                     :class="expanded ? '' : 'line-clamp-2'">
-                                                    <p x-text="company.sample_repository?.description || 'No description available'"></p>
+                                            <!-- Collapsible Description with unique state -->
+                                            <div class="mt-2" x-data="{ expanded: false }" :x-id="`desc-${index}`">
+                                                <div class="text-sm text-gray-600">
+                                                    <p x-show="!expanded || (company.sample_repository?.description || '').length <= 100" 
+                                                       x-text="(company.sample_repository?.description || 'No description available').length > 100 ? 
+                                                              (company.sample_repository?.description || 'No description available').substring(0, 100) + '...' : 
+                                                              (company.sample_repository?.description || 'No description available')"></p>
+                                                    
+                                                    <div x-show="expanded && (company.sample_repository?.description || '').length > 100" 
+                                                         x-transition:enter="transition ease-out duration-200"
+                                                         x-transition:enter-start="opacity-0 max-h-0"
+                                                         x-transition:enter-end="opacity-100 max-h-96"
+                                                         x-transition:leave="transition ease-in duration-200"
+                                                         x-transition:leave-start="opacity-100 max-h-96"
+                                                         x-transition:leave-end="opacity-0 max-h-0"
+                                                         class="overflow-hidden">
+                                                        <p x-text="company.sample_repository?.description || 'No description available'"></p>
+                                                    </div>
                                                 </div>
+                                                
                                                 <button 
                                                     @click="expanded = !expanded"
                                                     x-show="(company.sample_repository?.description || '').length > 100"
-                                                    class="text-blue-600 hover:text-blue-800 text-sm font-medium mt-1"
-                                                    x-text="expanded ? 'Show less ↑' : 'Show more ↓'"
-                                                ></button>
+                                                    class="text-blue-600 hover:text-blue-800 text-sm font-medium mt-2 flex items-center gap-1"
+                                                >
+                                                    <span x-text="expanded ? 'Show less' : 'Show more'"></span>
+                                                    <svg 
+                                                        class="w-4 h-4 transition-transform duration-200" 
+                                                        :class="expanded ? 'rotate-180' : ''"
+                                                        fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                                    >
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                                    </svg>
+                                                </button>
                                             </div>
                                         </div>
                                         

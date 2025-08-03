@@ -449,9 +449,18 @@ Provide a brief technical similarity analysis:`;
 
   async analyzeSimilarContributors(targetRepo, similarRepos, githubClient, onProgress = null) {
     console.log(`[AI] Analyzing contributors across ${similarRepos.length + 1} similar repositories...`);
+    console.log(`[AI] Target repo:`, targetRepo);
+    console.log(`[AI] Similar repos:`, similarRepos);
     
     const allContributors = new Map();
     const reposToAnalyze = [targetRepo, ...similarRepos.slice(0, 4)]; // Limit to avoid rate limits
+    
+    console.log(`[AI] Final repos to analyze:`, reposToAnalyze.map(r => ({
+      name: r.name,
+      owner: r.owner,
+      full_name: r.full_name,
+      language: r.language
+    })));
     
     if (onProgress) onProgress({ 
       step: 'fetching_contributors', 
@@ -470,9 +479,13 @@ Provide a brief technical similarity analysis:`;
         });
         
         const repoPath = repo.full_name || `${repo.owner}/${repo.name}`;
+        console.log(`[AI] Fetching contributors for: ${repoPath}`);
+        
         const contributorsResponse = await githubClient.get(`/repos/${repoPath}/contributors`, {
           params: { per_page: 30 }
         });
+        
+        console.log(`[AI] Found ${contributorsResponse.data.length} contributors for ${repoPath}`);
         
         contributorsResponse.data.forEach(contributor => {
           const key = contributor.login.toLowerCase();
@@ -489,28 +502,59 @@ Provide a brief technical similarity analysis:`;
           }
           
           const existingContributor = allContributors.get(key);
-          existingContributor.repos_contributed.push({
-            repo: repoPath,
-            contributions: contributor.contributions,
-            language: repo.language
-          });
-          existingContributor.total_contributions += contributor.contributions;
+          
+          // Check if this repo is already added to avoid duplicates
+          const existingRepo = existingContributor.repos_contributed.find(r => r.repo === repoPath);
+          if (!existingRepo) {
+            existingContributor.repos_contributed.push({
+              repo: repoPath,
+              contributions: contributor.contributions,
+              language: repo.language,
+              stars: repo.stars || 0
+            });
+            existingContributor.total_contributions += contributor.contributions;
+            console.log(`[AI] Added ${contributor.login} to ${repoPath} with ${contributor.contributions} contributions`);
+          } else {
+            console.log(`[AI] Skipped duplicate: ${contributor.login} already has ${repoPath}`);
+          }
         });
         
         await this.delay(1200); // Rate limit protection
         
       } catch (error) {
         console.log(`[AI] Failed to fetch contributors for ${repo.owner || repo.name}/${repo.name}: ${error.message}`);
+        if (error.response?.status === 404) {
+          console.log(`[AI] Repository not found: ${repo.owner || repo.name}/${repo.name}`);
+        } else if (error.response?.status === 403) {
+          console.log(`[AI] Rate limited or access denied for: ${repo.owner || repo.name}/${repo.name}`);
+        }
+        // Continue with other repos even if one fails
       }
     }
     
-    // More lenient filtering - include single-repo contributors with high contributions
+    console.log(`[AI] Total unique contributors found: ${allContributors.size}`);
+    
+    // More flexible filtering - prioritize cross-repo contributors but include high-value single-repo ones
     const eligibleContributors = Array.from(allContributors.values())
-      .filter(contributor => 
-        contributor.repos_contributed.length >= 2 || // Cross-repo contributors
-        contributor.total_contributions > 50 // Or high-contribution single-repo contributors
-      )
-      .sort((a, b) => b.total_contributions - a.total_contributions);
+      .filter(contributor => {
+        const isMultiRepo = contributor.repos_contributed.length >= 2;
+        const isHighContributor = contributor.total_contributions > 100;
+        const isVeryHighContributor = contributor.total_contributions > 500;
+        
+        return isMultiRepo || isVeryHighContributor || (isHighContributor && contributor.repos_contributed.length >= 1);
+      })
+      .sort((a, b) => {
+        // Prioritize multi-repo contributors, then by total contributions
+        const aMultiRepo = a.repos_contributed.length >= 2;
+        const bMultiRepo = b.repos_contributed.length >= 2;
+        
+        if (aMultiRepo && !bMultiRepo) return -1;
+        if (!aMultiRepo && bMultiRepo) return 1;
+        
+        return b.total_contributions - a.total_contributions;
+      });
+    
+    console.log(`[AI] Eligible contributors after filtering: ${eligibleContributors.length}`);
     
     if (onProgress) onProgress({ 
       step: 'analyzing_throughput', 
@@ -520,27 +564,44 @@ Provide a brief technical similarity analysis:`;
     
     // AI-powered contributor analysis
     const analyzedContributors = [];
+    const maxContributors = Math.min(eligibleContributors.length, 8);
     
-    for (let i = 0; i < Math.min(eligibleContributors.length, 8); i++) {
+    for (let i = 0; i < maxContributors; i++) {
       const contributor = eligibleContributors[i];
       
       if (onProgress) onProgress({ 
         step: 'analyzing_throughput', 
-        message: `Analyzing contributor: ${contributor.username} (${i+1}/${Math.min(eligibleContributors.length, 8)})`,
-        progress: 90 + (i / 8) * 8
+        message: `Analyzing contributor: ${contributor.username} (${i+1}/${maxContributors})`,
+        progress: 90 + (i / maxContributors) * 8
       });
       
-      const analysis = await this.analyzeContributorThroughput(contributor, githubClient);
-      analyzedContributors.push({
-        ...contributor,
-        ...analysis,
-        analysis_pending: false
-      });
+      try {
+        const analysis = await this.analyzeContributorThroughput(contributor, githubClient);
+        analyzedContributors.push({
+          ...contributor,
+          ...analysis,
+          analysis_pending: false
+        });
+        
+        console.log(`[AI] Successfully analyzed ${contributor.username}: ${analysis.throughput_score} score, ${contributor.repos_contributed.length} repos`);
+        
+      } catch (error) {
+        console.log(`[AI] Failed to analyze contributor ${contributor.username}: ${error.message}`);
+        // Add with basic info if analysis fails
+        analyzedContributors.push({
+          ...contributor,
+          throughput_score: Math.min(contributor.total_contributions / 10, 80),
+          activity_level: 'Unknown',
+          specialization: contributor.repos_contributed[0]?.language || 'Multi-language',
+          assessment: 'Active contributor across multiple projects',
+          analysis_pending: false
+        });
+      }
       
       await this.delay(400); // Rate limit protection
     }
     
-    console.log(`[AI] Analyzed ${analyzedContributors.length} high-throughput contributors`);
+    console.log(`[AI] Final analyzed contributors: ${analyzedContributors.length}`);
     return analyzedContributors;
   }
 
